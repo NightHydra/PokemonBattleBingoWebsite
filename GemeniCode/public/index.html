@@ -205,7 +205,9 @@
             
             if (isParticipant) {
                 lobbyContent.innerHTML = `
-                    <div id="participant-bingo-board" class="bingo-grid grid gap-2"></div>
+                    <div class="max-w-md mx-auto">
+                        <div id="participant-bingo-board" class="bingo-grid grid gap-2"></div>
+                    </div>
                     <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" style="display: none;" onclick="requestReview()">Request Review</button>
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
