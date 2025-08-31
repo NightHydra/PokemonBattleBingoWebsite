@@ -35,6 +35,7 @@
             text-align: center;
             border: 1px solid #d1d5db;
             transition: all 0.2s;
+            position: relative; /* Added for absolute positioning of info button */
         }
         .bingo-cell:not(.bg-yellow-400):not(.bg-green-500):hover {
             background-color: #e5e7eb;
@@ -89,6 +90,27 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        /* New styles for the info button */
+        .info-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #6b7280;
+            color: white;
+            border-radius: 9999px;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .info-btn:hover {
+            background-color: #4b5563;
         }
     </style>
 </head>
@@ -399,6 +421,7 @@
                     cell.classList.remove('bg-green-500', 'bg-yellow-400', 'cell-completed', 'cell-pending');
                 }
                 
+                // Add event listener for selection to the main cell
                 cell.addEventListener('click', () => {
                     if (isParticipant && !isCompleted && !isPending) {
                         const index = selectedAchievements.indexOf(achievement.name);
@@ -410,9 +433,6 @@
                             cell.classList.add('bg-yellow-400');
                         }
                     }
-                    document.getElementById('modal-achievement-name').textContent = achievement.name;
-                    document.getElementById('modal-achievement-description').textContent = achievement.description;
-                    showModal('bingo-modal');
                 });
                 boardContainer.appendChild(cell);
             });
@@ -436,12 +456,6 @@
                     cell.appendChild(completeBtn);
                 }
                 
-                cell.addEventListener('click', () => {
-                    document.getElementById('modal-achievement-name').textContent = achievement.name;
-                    document.getElementById('modal-achievement-description').textContent = achievement.description;
-                    showModal('bingo-modal');
-                });
-                
                 boardContainer.appendChild(cell);
             });
         }
@@ -449,7 +463,19 @@
         function createBingoCell(achievement) {
             const cell = document.createElement('div');
             cell.className = `bingo-cell flex-1 rounded-lg shadow relative`;
-            cell.textContent = achievement.name;
+            cell.innerHTML = `
+                <div class="absolute inset-0 flex items-center justify-center p-2 text-sm md:text-base">${achievement.name}</div>
+                <div class="info-btn">i</div>
+            `;
+            
+            // Add event listener to the info button
+            cell.querySelector('.info-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevents the parent cell's click from firing
+                document.getElementById('modal-achievement-name').textContent = achievement.name;
+                document.getElementById('modal-achievement-description').textContent = achievement.description;
+                showModal('bingo-modal');
+            });
+            
             return cell;
         }
 
