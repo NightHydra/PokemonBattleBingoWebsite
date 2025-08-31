@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Join as Participant</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Join as Participant</h1>
+  <% if (error) { %>
+    <p style="color:red"><%= error %></p>
+  <% } %>
+  <form action="/participant" method="post">
+    <label>Username</label>
+    <input type="text" name="username" required>
+    <label>Room Code</label>
+    <input type="text" name="roomCode" required>
+    <button type="submit">Join Room</button>
+  </form>
+</body>
+</html>

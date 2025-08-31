@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Bingo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        .bingo-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+        .bingo-cell {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s;
+        }
+        .bingo-cell:not(.bg-green-500):not(.bg-red-500):not(.bg-blue-500):hover {
+            background-color: #e5e7eb;
+            cursor: pointer;
+        }
+        .cell-pending {
+            background-color: #fcd34d;
+        }
+        .cell-completed {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .cell-completed-red {
+            background-color: #ef4444;
+        }
+        .cell-completed-blue {
+            background-color: #3b82f6;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div id="main-container" class="bg-white p-8 rounded-lg shadow-lg w-full container mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6">Battle Bingo</h1>
+
+        <!-- Landing Screen -->
+        <div id="landing-screen" class="space-y-4 text-center">
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="showCreateLobbyScreen()">Create Lobby</button>
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="showJoinParticipantScreen()">Join as Participant</button>
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="showJoinAdminScreen()">Join as Admin</button>
+        </div>
+
+        <!-- Create Lobby Screen -->
+        <div id="create-lobby-screen" class="hidden text-center space-y-4">
+            <h2 class="text-2xl font-bold mb-4">Create a New Lobby</h2>
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="createLobby()">Generate Room Code</button>
+            <p id="created-room-code" class="text-xl mt-4 font-bold hidden"></p>
+            <p id="created-admin-code" class="text-lg mt-2 hidden"></p>
+            <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="copyAdminCode()">Copy Admin Code</button>
+            <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Back</button>
+        </div>
+
+        <!-- Join Participant Screen -->
+        <div id="join-participant-screen" class="hidden space-y-4">
+            <h2 class="text-2xl font-bold mb-4 text-center">Join as Participant</h2>
+            <input type="text" id="participant-room-code" class="w-full p-3 border rounded-md" placeholder="Enter Room Code">
+            <input type="text" id="participant-username" class="w-full p-3 border rounded-md" placeholder="Enter Username">
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="joinLobby('participant')">Join</button>
+            <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Back</button>
+        </div>
+
+        <!-- Join Admin Screen -->
+        <div id="join-admin-screen" class="hidden space-y-4">
+            <h2 class="text-2xl font-bold mb-4 text-center">Join as Admin</h2>
+            <input type="text" id="admin-room-code" class="w-full p-3 border rounded-md" placeholder="Enter Room Code">
+            <input type="text" id="admin-admin-code" class="w-full p-3 border rounded-md" placeholder="Enter Admin Code">
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="joinLobby('admin')">Join</button>
+            <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Back</button>
+        </div>
+
+        <!-- Participant Screen -->
+        <div id="participant-screen" class="hidden">
+            <h2 class="text-2xl font-bold text-center mb-4">Your Bingo Board</h2>
+            <p id="participant-status" class="text-center mb-4 font-bold"></p>
+            <div id="participant-bingo-board" class="bingo-grid grid gap-2"></div>
+            <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" style="display: none;" onclick="requestReview()">Request Review</button>
+        </div>
+
+        <!-- Admin Screen -->
+        <div id="admin-screen" class="hidden">
+            <h2 class="text-2xl font-bold text-center mb-4">Admin Dashboard</h2>
+            <div id="admin-lobby-state">
+                <h3 class="text-xl font-bold mb-2">Lobby Participants</h3>
+                <ul id="participants-list" class="mb-4 space-y-2"></ul>
+            </div>
+            <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="bingo-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('bingo-modal')">&times;</span>
+            <h3 id="modal-achievement-name" class="text-2xl font-bold mb-4"></h3>
+            <p id="modal-achievement-description"></p>
+        </div>
+    </div>
+
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('review-modal')">&times;</span>
+            <h3 id="review-modal-title" class="text-2xl font-bold mb-4">Review Participant's Board</h3>
+            <div id="review-bingo-board" class="bingo-grid grid gap-2"></div>
+        </div>
+    </div>
+
+    <script>
+        // In-memory data store to mimic a server. This is local to the browser.
+        const LOBBIES = {};
+
+        // Base achievements for the bingo board
+        const BASE_ACHIEVEMENTS = [
+            { name: "First Blood", description: "Secure the first elimination of the game." },
+            { name: "Pacifist", description: "Win a round without eliminating any opponents." },
+            { name: "The Collector", description: "Collect 5 different power-ups in one round." },
+            { name: "Sniper", description: "Eliminate an opponent from more than 100 meters away." },
+            { name: "Unstoppable", description: "Eliminate 3 opponents in a row without taking damage." },
+            { name: "Team Player", description: "Revive a teammate." },
+            { name: "Solo Victory", description: "Win a round as the last person standing on your team." },
+            { name: "Architect", description: "Build a structure with at least 50 pieces." },
+            { name: "The Hoarder", description: "Have a full inventory of all item slots." },
+            { name: "Marksman", description: "Land 10 headshots in a single round." },
+            { name: "Medic", description: "Heal a total of 500 health to your teammates." },
+            { name: "Explorer", description: "Discover a new area on the map." },
+            { name: "Stealthy", description: "Eliminate an opponent with a melee attack." },
+            { name: "Treasure Hunter", description: "Open 5 supply drops in a single game." },
+            { name: "Lucky Shot", description: "Eliminate an opponent with a grenade or other explosive." },
+            { name: "Hot Drop", description: "Eliminate an opponent within 30 seconds of landing." },
+            { name: "The Bait", description: "Lure an enemy into a trap set by your teammate." },
+            { name: "Close Call", description: "Win a fight with less than 10 health remaining." },
+            { name: "Full Squad", description: "Eliminate an entire enemy squad by yourself." },
+            { name: "The Flash", description: "Run for 1,000 meters in under a minute." },
+            { name: "King of the Hill", description: "Be the last person alive in the final zone." },
+            { name: "The Juggernaut", description: "Absorb more than 1,000 damage in a single round." },
+            { name: "Supply Run", description: "Open 10 loot containers in a single game." },
+            { name: "Master Builder", description: "Build a defensive wall while under heavy fire." },
+            { name: "Grounded", description: "Eliminate a flying opponent." }
+        ];
+
+        // Application state variables
+        let currentRoomCode = '';
+        let currentUsername = '';
+        let currentAdminCode = '';
+        let isParticipant = false;
+        let selectedAchievements = [];
+        let pollingInterval;
+
+        // UI screen management
+        const screens = ['landing-screen', 'create-lobby-screen', 'join-participant-screen', 'join-admin-screen', 'participant-screen', 'admin-screen'];
+
+        // Make functions globally accessible for HTML onclick attributes
+        window.showScreen = function(screenId) {
+            screens.forEach(id => {
+                const screen = document.getElementById(id);
+                if (id === screenId) {
+                    screen.classList.remove('hidden');
+                } else {
+                    screen.classList.add('hidden');
+                }
+            });
+        }
+
+        window.clearPolling = function() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+            }
+        }
+
+        window.showLandingScreen = function() {
+            clearPolling();
+            showScreen('landing-screen');
+        }
+
+        window.showCreateLobbyScreen = function() {
+            showScreen('create-lobby-screen');
+            document.getElementById('created-room-code').classList.add('hidden');
+            document.getElementById('created-admin-code').classList.add('hidden');
+        }
+
+        window.showJoinParticipantScreen = function() {
+            showScreen('join-participant-screen');
+        }
+
+        window.showJoinAdminScreen = function() {
+            showScreen('join-admin-screen');
+        }
+
+        window.showParticipantScreen = function() {
+            showScreen('participant-screen');
+            isParticipant = true;
+            document.getElementById('request-review-btn').style.display = 'block';
+            startParticipantPolling();
+        }
+
+        window.showAdminScreen = function() {
+            showScreen('admin-screen');
+            isParticipant = false;
+            startAdminPolling();
+        }
+
+        window.showModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.showCustomModal = function(title, message) {
+            const existingModal = document.getElementById('custom-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            const modal = document.createElement('div');
+            modal.id = 'custom-modal';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content text-center">
+                    <h3 class="text-2xl font-bold mb-4">${title}</h3>
+                    <p class="mb-4">${message}</p>
+                    <button class="btn-primary py-2 px-4 rounded-md" onclick="document.getElementById('custom-modal').remove()">OK</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.style.display = 'flex';
+        }
+
+        // --- Game Logic Functions (Client-side) ---
+
+        window.createLobby = function() {
+            const roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const adminCode = Math.random().toString(36).substring(2, 8);
+            
+            // Create a randomized bingo board
+            const bingoBoard = [...BASE_ACHIEVEMENTS]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 25);
+
+            LOBBIES[roomCode] = {
+                adminCode,
+                bingoBoard,
+                participants: {}
+            };
+
+            currentRoomCode = roomCode;
+            currentAdminCode = adminCode;
+
+            document.getElementById('created-room-code').textContent = `Room Code: ${currentRoomCode}`;
+            document.getElementById('created-admin-code').textContent = `Admin Code: ${currentAdminCode}`;
+            document.getElementById('created-room-code').classList.remove('hidden');
+            document.getElementById('created-admin-code').classList.remove('hidden');
+        }
+
+        window.copyAdminCode = function() {
+            const adminCode = document.getElementById('created-admin-code').textContent.replace('Admin Code: ', '');
+            navigator.clipboard.writeText(adminCode)
+                .then(() => {
+                    const tempMessage = document.createElement('p');
+                    tempMessage.textContent = 'Admin code copied!';
+                    tempMessage.className = 'text-green-500 mt-2';
+                    document.getElementById('create-lobby-screen').appendChild(tempMessage);
+                    setTimeout(() => tempMessage.remove(), 2000);
+                })
+                .catch(err => console.error('Failed to copy:', err));
+        }
+
+        window.joinLobby = function(role) {
+            const roomCode = document.getElementById(role === 'participant' ? 'participant-room-code' : 'admin-room-code').value.toUpperCase();
+            const lobby = LOBBIES[roomCode];
+
+            if (!lobby) {
+                showCustomModal('Error', 'Invalid room code.');
+                return;
+            }
+
+            if (role === 'participant') {
+                const username = document.getElementById('participant-username').value;
+                if (!username) {
+                    showCustomModal('Error', 'Please enter a username.');
+                    return;
+                }
+                const existingParticipant = lobby.participants[username];
+                if (existingParticipant) {
+                     showCustomModal('Error', 'Username already exists. Please choose another.');
+                    return;
+                }
+                const team = Math.random() < 0.5 ? 'red' : 'blue';
+                lobby.participants[username] = {
+                    team,
+                    pendingReview: [],
+                    completedAchievements: []
+                };
+                currentUsername = username;
+                currentRoomCode = roomCode;
+                document.getElementById('participant-status').textContent = `Team: ${team.toUpperCase()}`;
+                showParticipantScreen();
+            } else { // Admin
+                const adminCode = document.getElementById('admin-admin-code').value;
+                if (adminCode !== lobby.adminCode) {
+                    showCustomModal('Error', 'Invalid admin code.');
+                    return;
+                }
+                currentAdminCode = adminCode;
+                currentRoomCode = roomCode;
+                showAdminScreen();
+            }
+        }
+
+        window.requestReview = function() {
+            if (selectedAchievements.length === 0) {
+                showCustomModal('Error', 'Please select at least one achievement to review.');
+                return;
+            }
+            const lobby = LOBBIES[currentRoomCode];
+            if (lobby) {
+                const participant = lobby.participants[currentUsername];
+                if (participant) {
+                    participant.pendingReview = [...new Set([...participant.pendingReview, ...selectedAchievements])];
+                    selectedAchievements = [];
+                    showCustomModal('Success', 'Review request sent! An admin will review your achievements shortly.');
+                    updateBingoBoard('participant-bingo-board', lobby.bingoBoard, participant.completedAchievements, participant.pendingReview);
+                }
+            }
+        }
+
+        window.markAsCompleted = function(username, achievementName) {
+            const lobby = LOBBIES[currentRoomCode];
+            if (lobby && lobby.participants[username]) {
+                const participant = lobby.participants[username];
+                
+                // Remove from pending
+                participant.pendingReview = participant.pendingReview.filter(name => name !== achievementName);
+
+                // Add to completed
+                if (!participant.completedAchievements.includes(achievementName)) {
+                    participant.completedAchievements.push(achievementName);
+                }
+
+                // Close the modal and update the admin dashboard
+                closeModal('review-modal');
+                showAdminScreen();
+            }
+        }
+
+        window.showReviewModal = function(username) {
+            const lobby = LOBBIES[currentRoomCode];
+            const participantData = lobby.participants[username];
+            if (!participantData) return;
+
+            document.getElementById('review-modal-title').textContent = `Reviewing ${username}'s Board`;
+            
+            // Get all completed achievements from all players
+            const allCompleted = Object.values(lobby.participants).flatMap(p => p.completedAchievements);
+            updateReviewBoard('review-bingo-board', lobby.bingoBoard, allCompleted, participantData.pendingReview, username);
+
+            showModal('review-modal');
+        }
+
+        function createBingoCell(achievement) {
+            const cell = document.createElement('div');
+            cell.className = `bingo-cell flex-1 rounded-lg shadow relative`;
+            cell.textContent = achievement.name;
+            return cell;
+        }
+
+        function startParticipantPolling() {
+            clearPolling();
+            // Polling is no longer needed in this client-side version, as all changes are local
+            // The updates will be handled by the direct function calls.
+            const lobby = LOBBIES[currentRoomCode];
+            if (lobby) {
+                const participant = lobby.participants[currentUsername];
+                if (participant) {
+                    updateBingoBoard('participant-bingo-board', lobby.bingoBoard, participant.completedAchievements, participant.pendingReview);
+                }
+            }
+        }
+
+        function startAdminPolling() {
+            clearPolling();
+            // Same as above, no polling needed.
+            updateAdminDashboard();
+        }
+
+        function updateAdminDashboard() {
+            const lobby = LOBBIES[currentRoomCode];
+            if (!lobby) return;
+
+            const participantsList = document.getElementById('participants-list');
+            participantsList.innerHTML = '';
+            
+            Object.keys(lobby.participants).forEach(username => {
+                const participant = lobby.participants[username];
+                const li = document.createElement('li');
+                li.textContent = `${username} (${participant.team})`;
+                
+                const hasReviewRequest = participant.pendingReview && participant.pendingReview.length > 0;
+                if (hasReviewRequest) {
+                    li.className = 'p-2 rounded-md shadow bg-red-400 text-white';
+                    li.textContent += ' - REVIEW PENDING';
+                } else {
+                    li.className = 'p-2 rounded-md shadow bg-gray-200';
+                }
+
+                const reviewBtn = document.createElement('button');
+                reviewBtn.textContent = 'Review';
+                reviewBtn.className = 'ml-4 py-1 px-3 rounded-md bg-blue-500 text-white font-bold';
+                reviewBtn.onclick = () => showReviewModal(username);
+                li.appendChild(reviewBtn);
+                participantsList.appendChild(li);
+            });
+        }
+
+        function updateBingoBoard(boardContainerId, board, completedAchievements, pendingAchievements = []) {
+            const boardContainer = document.getElementById(boardContainerId);
+            boardContainer.innerHTML = '';
+            board.forEach(achievement => {
+                const cell = createBingoCell(achievement);
+                const isCompleted = completedAchievements.includes(achievement.name);
+                const isPending = pendingAchievements.includes(achievement.name);
+                const completedByRed = Object.values(LOBBIES[currentRoomCode].participants)
+                                            .filter(p => p.team === 'red')
+                                            .some(p => p.completedAchievements.includes(achievement.name));
+                const completedByBlue = Object.values(LOBBIES[currentRoomCode].participants)
+                                            .filter(p => p.team === 'blue')
+                                            .some(p => p.completedAchievements.includes(achievement.name));
+
+                if (completedByRed) {
+                    cell.classList.add('bg-red-500', 'text-white');
+                } else if (completedByBlue) {
+                    cell.classList.add('bg-blue-500', 'text-white');
+                } else if (isPending) {
+                    cell.classList.add('bg-yellow-400');
+                }
+                
+                cell.addEventListener('click', () => {
+                    if (isParticipant && !isCompleted && !isPending) {
+                        const index = selectedAchievements.indexOf(achievement.name);
+                        if (index > -1) {
+                            selectedAchievements.splice(index, 1);
+                            cell.classList.remove('bg-yellow-400');
+                        } else {
+                            selectedAchievements.push(achievement.name);
+                            cell.classList.add('bg-yellow-400');
+                        }
+                    }
+                    document.getElementById('modal-achievement-name').textContent = achievement.name;
+                    document.getElementById('modal-achievement-description').textContent = achievement.description;
+                    showModal('bingo-modal');
+                });
+                boardContainer.appendChild(cell);
+            });
+        }
+        
+        function updateReviewBoard(boardContainerId, board, allCompleted, pending, username) {
+            const boardContainer = document.getElementById(boardContainerId);
+            boardContainer.innerHTML = '';
+            board.forEach(achievement => {
+                const cell = createBingoCell(achievement);
+                const isCompletedByAnyone = allCompleted.includes(achievement.name);
+                const isPendingForThisUser = pending.includes(achievement.name);
+                
+                if (isCompletedByAnyone) {
+                     const team = Object.values(LOBBIES[currentRoomCode].participants)
+                                    .find(p => p.completedAchievements.includes(achievement.name))?.team;
+                    if (team === 'red') {
+                        cell.classList.add('bg-red-500', 'text-white');
+                    } else if (team === 'blue') {
+                        cell.classList.add('bg-blue-500', 'text-white');
+                    }
+                } else if (isPendingForThisUser) {
+                    cell.classList.add('bg-yellow-400');
+                    const completeBtn = document.createElement('button');
+                    completeBtn.textContent = 'Mark Complete';
+                    completeBtn.className = 'absolute bottom-1 right-1 bg-green-500 text-white text-xs px-2 py-1 rounded';
+                    completeBtn.onclick = () => markAsCompleted(username, achievement.name);
+                    cell.appendChild(completeBtn);
+                }
+                
+                cell.addEventListener('click', () => {
+                    document.getElementById('modal-achievement-name').textContent = achievement.name;
+                    document.getElementById('modal-achievement-description').textContent = achievement.description;
+                    showModal('bingo-modal');
+                });
+                
+                boardContainer.appendChild(cell);
+            });
+        }
+    </script>
+</body>
+</html>

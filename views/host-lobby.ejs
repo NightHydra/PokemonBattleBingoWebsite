@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Lobby</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Participant Queue</h1>
+  <ul>
+    <% participants.forEach(user => { %>
+      <li><%= user %></li>
+    <% }); %>
+  </ul>
+  <div>
+    <p>Room Code: <%= roomCode %></p>
+    <p>Admin Code: <%= adminCode %></p>
+  </div>
+  <button style="background:green; color:white;">Yes</button>
+</body>
+</html>

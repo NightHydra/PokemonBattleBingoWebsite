@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Host Login</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Join Room Screen</h1>
+  <% if (error) { %>
+    <p style="color:red"><%= error %></p>
+  <% } %>
+  <form action="/host" method="post">
+    <label>Room Code</label>
+    <input type="text" name="roomCode" required>
+    <label>Admin Code</label>
+    <input type="text" name="adminCode" required>
+    <button type="submit">Join Room</button>
+  </form>
+</body>
+</html>

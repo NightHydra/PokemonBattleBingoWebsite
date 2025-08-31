@@ -1,0 +1,122 @@
+[
+  {
+    "name": "First Steps",
+    "description": "Complete your first objective."
+  },
+  {
+    "name": "Social Butterfly",
+    "description": "Join a public lobby with at least 5 other people."
+  },
+  {
+    "name": "Lone Wolf",
+    "description": "Create and complete an objective in a private room."
+  },
+  {
+    "name": "Completionist",
+    "description": "Complete 10 objectives in a single game."
+  },
+  {
+    "name": "Speed Demon",
+    "description": "Complete a single objective in under 10 seconds."
+  },
+  {
+    "name": "Strategist",
+    "description": "Complete two adjacent objectives to start a line."
+  },
+  {
+    "name": "The Architect",
+    "description": "Be the first to create a diagonal line on the board."
+  },
+  {
+    "name": "Full House",
+    "description": "Complete a full row and column in the same game."
+  },
+  {
+    "name": "Master of Disguise",
+    "description": "Change your username at least three times."
+  },
+  {
+    "name": "Bingo Master",
+    "description": "Be the first player to achieve a Bingo in your lobby."
+  },
+  {
+    "name": "Globetrotter",
+    "description": "Join a lobby with players from three different countries."
+  },
+  {
+    "name": "Late to the Party",
+    "description": "Join a lobby after the game has already started."
+  },
+  {
+    "name": "Quick Thinker",
+    "description": "Complete a Bingo in under one minute."
+  },
+  {
+    "name": "Double Vision",
+    "description": "Achieve two Bingos in a single game."
+  },
+  {
+    "name": "The Champion",
+    "description": "Win five games in a row as a participant."
+  },
+  {
+    "name": "The Host with the Most",
+    "description": "Host a lobby with ten or more participants."
+  },
+  {
+    "name": "Weekend Warrior",
+    "description": "Play a game between Friday and Sunday."
+  },
+  {
+    "name": "The Early Bird",
+    "description": "Be the first participant to join a newly created lobby."
+  },
+  {
+    "name": "Socializer",
+    "description": "Use the chat feature to send at least ten messages."
+  },
+  {
+    "name": "The Observer",
+    "description": "Join a game as a participant but do not complete any objectives."
+  },
+  {
+    "name": "Hidden Gem",
+    "description": "Find and complete a secret objective not on the board."
+  },
+  {
+    "name": "The Collector",
+    "description": "Complete one of every type of objective on the board."
+  },
+  {
+    "name": "Night Owl",
+    "description": "Play a game between 12 AM and 5 AM."
+  },
+  {
+    "name": "The Strategist",
+    "description": "Achieve Bingo with the middle square as the final completed objective."
+  },
+  {
+    "name": "The Navigator",
+    "description": "Complete a path of five objectives, moving horizontally and vertically."
+  },
+  {
+    "name": "The Survivor",
+    "description": "Be the last player remaining in a game after everyone else has left."
+  },
+  {
+    "name": "The Ghost",
+    "description": "Win a game without your name appearing in the top player list."
+  },
+  {
+    "name": "The Joker",
+    "description": "Complete an objective using a wild card."
+  },
+  {
+    "name": "The Scribe",
+    "description": "Fill out a bingo board and save it to your profile."
+  },
+  {
+    "name": "The Alchemist",
+    "description": "Combine two different achievements to get a new one."
+  }
+]

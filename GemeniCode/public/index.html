@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Bingo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        .bingo-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+        .bingo-cell {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s;
+        }
+        .bingo-cell:not(.bg-yellow-400):not(.bg-green-500):hover {
+            background-color: #e5e7eb;
+            cursor: pointer;
+        }
+        .cell-pending {
+            background-color: #fcd34d;
+        }
+        .cell-completed {
+            background-color: #22c55e;
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4f46e5;
+            animation: spin 1s ease infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div id="main-container" class="bg-white p-8 rounded-lg shadow-lg w-full container mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6">Battle Bingo</h1>
+
+        <!-- Landing Screen (2 options) -->
+        <div id="landing-screen" class="space-y-4 text-center">
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="showCreateLobbyScreen()">Create Lobby</button>
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="showJoinLobbyScreen()">Join Lobby</button>
+        </div>
+
+        <!-- Create Lobby Screen -->
+        <div id="create-lobby-screen" class="hidden text-center space-y-4">
+            <h2 class="text-2xl font-bold mb-4">Create a New Lobby</h2>
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="createLobby()">Generate Room Code</button>
+            <div class="flex justify-center mt-2">
+                <div id="create-spinner" class="spinner"></div>
+            </div>
+            <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Back</button>
+        </div>
+
+        <!-- Join Lobby Screen -->
+        <div id="join-lobby-screen" class="hidden text-center space-y-4">
+            <h2 class="text-2xl font-bold mb-4">Join an Existing Lobby</h2>
+            <select id="role-select" class="w-full p-3 border rounded-md" onchange="toggleCodeInput()">
+                <option value="participant">Join as Participant</option>
+                <option value="admin">Join as Admin</option>
+            </select>
+            <input type="text" id="join-room-code" class="w-full p-3 border rounded-md" placeholder="Enter Room Code">
+            <input type="text" id="join-username" class="w-full p-3 border rounded-md" placeholder="Enter Username">
+            <input type="text" id="join-admin-code" class="w-full p-3 border rounded-md hidden" placeholder="Enter Admin Code">
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="joinLobby()">Join</button>
+            <div class="flex justify-center mt-2">
+                <div id="join-spinner" class="spinner"></div>
+            </div>
+            <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Back</button>
+        </div>
+
+        <!-- In-Lobby Screens -->
+        <div id="lobby-screen" class="hidden">
+            <h2 id="lobby-header" class="text-2xl font-bold text-center mb-4"></h2>
+            <div id="lobby-content">
+                <!-- Content will be injected here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="bingo-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('bingo-modal')">&times;</span>
+            <h3 id="modal-achievement-name" class="text-2xl font-bold mb-4"></h3>
+            <p id="modal-achievement-description"></p>
+        </div>
+    </div>
+
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('review-modal')">&times;</span>
+            <h3 id="review-modal-title" class="text-2xl font-bold mb-4">Review Participant's Board</h3>
+            <div id="review-bingo-board" class="bingo-grid grid gap-2"></div>
+        </div>
+    </div>
+    
+    <div id="custom-modal" class="modal">
+        <div class="modal-content text-center">
+            <h3 id="custom-modal-title" class="text-2xl font-bold mb-4"></h3>
+            <p id="custom-modal-message" class="mb-4"></p>
+            <button class="btn-primary py-2 px-4 rounded-md" onclick="closeModal('custom-modal')">OK</button>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        let currentRoomCode = '';
+        let currentAdminCode = '';
+        let currentUsername = '';
+        let isParticipant = false;
+        let selectedAchievements = [];
+        let globalLobbyState = null;
+
+        // UI screen management
+        const screens = ['landing-screen', 'create-lobby-screen', 'join-lobby-screen', 'lobby-screen'];
+        
+        window.showScreen = function(screenId) {
+            screens.forEach(id => {
+                const screen = document.getElementById(id);
+                screen.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        window.showLandingScreen = function() {
+            showScreen('landing-screen');
+        }
+        window.showCreateLobbyScreen = function() {
+            showScreen('create-lobby-screen');
+            document.getElementById('create-spinner').style.display = 'none';
+        }
+        window.showJoinLobbyScreen = function() {
+            showScreen('join-lobby-screen');
+            document.getElementById('join-spinner').style.display = 'none';
+        }
+        
+        window.showLobbyScreen = function(role) {
+            isParticipant = (role === 'participant');
+            document.getElementById('lobby-header').textContent = `Lobby: ${currentRoomCode}`;
+            
+            const lobbyContent = document.getElementById('lobby-content');
+            lobbyContent.innerHTML = ''; 
+            
+            if (isParticipant) {
+                lobbyContent.innerHTML = `
+                    <div id="participant-bingo-board" class="bingo-grid grid gap-2"></div>
+                    <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" style="display: none;" onclick="requestReview()">Request Review</button>
+                    <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
+                `;
+            } else { // Admin
+                lobbyContent.innerHTML = `
+                    <p class="text-lg font-bold">Room Code: <span id="admin-room-code">${currentRoomCode}</span></p>
+                    <p class="text-md mb-4">Admin Code: <span id="admin-admin-code">${currentAdminCode}</span></p>
+                    <h3 class="text-xl font-bold mb-2">Participants</h3>
+                    <ul id="participants-list" class="mb-4 space-y-2"></ul>
+                    <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
+                `;
+            }
+            showScreen('lobby-screen');
+        }
+
+        window.showModal = function(modalId, title = '', message = '') {
+            if (title && message) {
+                document.getElementById('custom-modal-title').textContent = title;
+                document.getElementById('custom-modal-message').textContent = message;
+                document.getElementById('custom-modal').style.display = 'flex';
+            } else {
+                document.getElementById(modalId).style.display = 'flex';
+            }
+        }
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        window.toggleCodeInput = function() {
+            const role = document.getElementById('role-select').value;
+            document.getElementById('join-username').classList.toggle('hidden', role === 'admin');
+            document.getElementById('join-admin-code').classList.toggle('hidden', role === 'participant');
+        }
+        
+        window.createLobby = async function() {
+            document.getElementById('create-spinner').style.display = 'block';
+
+            try {
+                const response = await fetch('/api/create-lobby', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.error) {
+                    showModal('custom-modal', 'Error', data.error);
+                    return;
+                }
+
+                currentRoomCode = data.roomCode;
+                currentAdminCode = data.adminCode;
+                socket.emit('joinRoom', { roomCode: currentRoomCode });
+                showLobbyScreen('admin');
+            } catch (error) {
+                console.error('Failed to create lobby:', error);
+                showModal('custom-modal', 'Error', 'Failed to create lobby. Please try again.');
+            } finally {
+                document.getElementById('create-spinner').style.display = 'none';
+            }
+        }
+        
+        window.joinLobby = async function() {
+            const roomCode = document.getElementById('join-room-code').value.toUpperCase();
+            const role = document.getElementById('role-select').value;
+            const username = document.getElementById('join-username').value;
+            const adminCode = document.getElementById('join-admin-code').value;
+            
+            const spinner = document.getElementById('join-spinner');
+            spinner.style.display = 'block';
+
+            const payload = { roomCode, role };
+            if (role === 'participant') {
+                payload.username = username;
+            } else {
+                payload.adminCode = adminCode;
+            }
+            
+            try {
+                const response = await fetch('/api/join-lobby', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                
+                if (data.error) {
+                    showModal('custom-modal', 'Error', data.error);
+                    return;
+                }
+                
+                currentRoomCode = roomCode;
+                if (role === 'participant') {
+                    currentUsername = username;
+                } else {
+                    currentAdminCode = adminCode;
+                }
+                
+                socket.emit('joinRoom', { roomCode });
+                showLobbyScreen(role);
+            } catch (error) {
+                console.error('Failed to join lobby:', error);
+                showModal('custom-modal', 'Error', 'Failed to join lobby. Please check your codes and try again.');
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        window.requestReview = function() {
+            if (selectedAchievements.length === 0) {
+                showModal('custom-modal', 'Error', 'Please select at least one achievement to review.');
+                return;
+            }
+            socket.emit('requestReview', {
+                roomCode: currentRoomCode,
+                username: currentUsername,
+                achievements: selectedAchievements
+            });
+            selectedAchievements = [];
+            showModal('custom-modal', 'Success', 'Review request sent!');
+        }
+        
+        window.markAsCompleted = function(username, achievementName) {
+            socket.emit('markComplete', {
+                roomCode: currentRoomCode,
+                username,
+                achievementName
+            });
+            closeModal('review-modal');
+        }
+        
+        window.showReviewModal = function(username) {
+            if (!globalLobbyState) return;
+            const participantData = globalLobbyState.participants[username];
+            if (!participantData) return;
+
+            document.getElementById('review-modal-title').textContent = `Reviewing ${username}'s Board`;
+            updateReviewBoard('review-bingo-board', globalLobbyState.bingoBoard, participantData.completedAchievements, participantData.pendingReview, username);
+            showModal('review-modal');
+        }
+
+        socket.on('lobbyUpdate', (lobbyState) => {
+            globalLobbyState = lobbyState;
+            if (isParticipant) {
+                const participant = lobbyState.participants[currentUsername];
+                if (participant) {
+                    document.getElementById('request-review-btn').style.display = 'block';
+                    updateBingoBoard('participant-bingo-board', lobbyState.bingoBoard, participant.completedAchievements, participant.pendingReview);
+                }
+            } else { // Admin
+                updateAdminDashboard(lobbyState);
+            }
+        });
+        
+        function updateAdminDashboard(lobbyState) {
+            const participantsList = document.getElementById('participants-list');
+            if (!participantsList) return;
+            participantsList.innerHTML = '';
+            Object.keys(lobbyState.participants).forEach(username => {
+                const participant = lobbyState.participants[username];
+                const li = document.createElement('li');
+                
+                const hasReviewRequest = participant.pendingReview && participant.pendingReview.length > 0;
+                if (hasReviewRequest) {
+                    li.className = 'p-2 rounded-md shadow bg-red-400 text-white';
+                    li.textContent = `${username} - REVIEW PENDING`;
+                } else {
+                    li.className = 'p-2 rounded-md shadow bg-gray-200';
+                    li.textContent = username;
+                }
+
+                const reviewBtn = document.createElement('button');
+                reviewBtn.textContent = 'Review';
+                reviewBtn.className = 'ml-4 py-1 px-3 rounded-md bg-blue-500 text-white font-bold';
+                reviewBtn.onclick = () => showReviewModal(username);
+                li.appendChild(reviewBtn);
+                participantsList.appendChild(li);
+            });
+        }
+        
+        function updateBingoBoard(boardContainerId, board, completedAchievements, pendingAchievements = []) {
+            const boardContainer = document.getElementById(boardContainerId);
+            boardContainer.innerHTML = '';
+            board.forEach(achievement => {
+                const cell = createBingoCell(achievement);
+                const isCompleted = completedAchievements.includes(achievement.name);
+                const isPending = pendingAchievements.includes(achievement.name);
+                if (isCompleted) {
+                    cell.classList.add('bg-green-500', 'cell-completed');
+                } else if (isPending) {
+                    cell.classList.add('bg-yellow-400', 'cell-pending');
+                } else {
+                    cell.classList.remove('bg-green-500', 'bg-yellow-400', 'cell-completed', 'cell-pending');
+                }
+                
+                cell.addEventListener('click', () => {
+                    if (isParticipant && !isCompleted && !isPending) {
+                        const index = selectedAchievements.indexOf(achievement.name);
+                        if (index > -1) {
+                            selectedAchievements.splice(index, 1);
+                            cell.classList.remove('bg-yellow-400');
+                        } else {
+                            selectedAchievements.push(achievement.name);
+                            cell.classList.add('bg-yellow-400');
+                        }
+                    }
+                    document.getElementById('modal-achievement-name').textContent = achievement.name;
+                    document.getElementById('modal-achievement-description').textContent = achievement.description;
+                    showModal('bingo-modal');
+                });
+                boardContainer.appendChild(cell);
+            });
+        }
+        
+        function updateReviewBoard(boardContainerId, board, completed, pending, username) {
+            const boardContainer = document.getElementById(boardContainerId);
+            boardContainer.innerHTML = '';
+            board.forEach(achievement => {
+                const cell = createBingoCell(achievement);
+                const isCompleted = completed.includes(achievement.name);
+                const isPending = pending.includes(achievement.name);
+                if (isCompleted) {
+                    cell.classList.add('bg-green-500');
+                } else if (isPending) {
+                    cell.classList.add('bg-yellow-400');
+                    const completeBtn = document.createElement('button');
+                    completeBtn.textContent = 'Mark Complete';
+                    completeBtn.className = 'absolute bottom-1 right-1 bg-green-500 text-white text-xs px-2 py-1 rounded';
+                    completeBtn.onclick = () => markAsCompleted(username, achievement.name);
+                    cell.appendChild(completeBtn);
+                }
+                
+                cell.addEventListener('click', () => {
+                    document.getElementById('modal-achievement-name').textContent = achievement.name;
+                    document.getElementById('modal-achievement-description').textContent = achievement.description;
+                    showModal('bingo-modal');
+                });
+                
+                boardContainer.appendChild(cell);
+            });
+        }
+
+        function createBingoCell(achievement) {
+            const cell = document.createElement('div');
+            cell.className = `bingo-cell flex-1 rounded-lg shadow relative`;
+            cell.textContent = achievement.name;
+            return cell;
+        }
+
+        window.copyCode = function(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent.split(': ')[1];
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    showModal('custom-modal', 'Success', 'Code copied to clipboard!');
+                })
+                .catch(err => {
+                    showModal('custom-modal', 'Error', 'Failed to copy code.');
+                    console.error('Failed to copy:', err);
+                });
+        }
+    </script>
+</body>
+</html>
