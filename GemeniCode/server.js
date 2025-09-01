@@ -60,6 +60,7 @@ app.post('/api/create-lobby', (req, res) => {
         bingoBoard,
         participants: [],
         pendingParticipants: [],
+        pendingRequests: [], // New array for ordered, individual requests
         chat: []
     };
 
@@ -151,7 +152,14 @@ io.on('connection', (socket) => {
         const lobby = LOBBIES[roomCode];
         const participant = lobby.participants.find(p => p.username === username);
         if (lobby && participant) {
+            // Add to the participant's list for their own board's yellow squares
             participant.pendingReview = [...new Set([...participant.pendingReview, ...achievements])];
+            
+            // Add individual requests to the global ordered list for the admin
+            achievements.forEach(achievementName => {
+                lobby.pendingRequests.push({ username, achievementName });
+            });
+            
             io.to(roomCode).emit('lobbyUpdate', lobby);
         }
     });
@@ -161,8 +169,11 @@ io.on('connection', (socket) => {
         const participant = lobby.participants.find(p => p.username === username);
         if (lobby && participant) {
             
-            // Remove from pending
+            // Remove from participant's local pending list
             participant.pendingReview = participant.pendingReview.filter(name => name !== achievementName);
+
+            // Remove from global pending requests list
+            lobby.pendingRequests = lobby.pendingRequests.filter(req => !(req.username === username && req.achievementName === achievementName));
 
             // Add to completed
             const existingAchievement = participant.completedAchievements.find(a => a.name === achievementName);

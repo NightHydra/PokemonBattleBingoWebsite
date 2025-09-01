@@ -247,10 +247,16 @@
                     <div class="max-w-md mx-auto mb-4">
                         <div id="admin-bingo-board" class="bingo-grid grid gap-2"></div>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Pending Requests</h3>
-                    <ul id="pending-participants-list" class="mb-4 space-y-2"></ul>
-                    <h3 class="text-xl font-bold mb-2">Active Participants</h3>
-                    <ul id="active-participants-list" class="mb-4 space-y-2"></ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Active Participants</h3>
+                            <ul id="active-participants-list" class="mb-4 space-y-2"></ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Pending Review Requests</h3>
+                            <ul id="pending-review-requests" class="mb-4 space-y-2"></ul>
+                        </div>
+                    </div>
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
             }
@@ -366,7 +372,6 @@
                 achievementName,
                 team: participantData.team
             });
-            closeModal('review-modal');
         }
         
         window.showReviewModal = function(username) {
@@ -422,14 +427,16 @@
         });
         
         function updateAdminDashboard(lobbyState) {
-            const pendingList = document.getElementById('pending-participants-list');
-            const activeList = document.getElementById('active-participants-list');
-            if (!pendingList || !activeList) return;
+            const pendingList = document.getElementById('active-participants-list');
+            const reviewRequestsList = document.getElementById('pending-review-requests');
+            if (!pendingList || !reviewRequestsList) return;
+            
             pendingList.innerHTML = '';
-            activeList.innerHTML = '';
-
+            reviewRequestsList.innerHTML = '';
+            
             const pendingParticipants = lobbyState.pendingParticipants || [];
             const activeParticipants = lobbyState.participants || [];
+            const pendingRequests = lobbyState.pendingRequests || [];
 
             pendingParticipants.forEach(pendingUser => {
                 const li = document.createElement('li');
@@ -444,15 +451,25 @@
 
             activeParticipants.forEach(participant => {
                 const li = document.createElement('li');
-                const hasReviewRequest = participant.pendingReview && participant.pendingReview.length > 0;
-                let bgColor = 'bg-gray-200';
-                if (hasReviewRequest) {
-                    bgColor = 'bg-red-400 text-white';
-                }
-                li.className = `p-2 rounded-md shadow ${bgColor} flex justify-between items-center`;
+                li.className = `p-2 rounded-md shadow bg-gray-200 flex justify-between items-center`;
                 li.innerHTML = `<span>${participant.username} (${participant.team})</span>
-                                <button class="py-1 px-3 rounded-md bg-blue-500 text-white font-bold" onclick="showReviewModal('${participant.username}')">Review</button>`;
-                activeList.appendChild(li);
+                                <button class="py-1 px-3 rounded-md bg-blue-500 text-white font-bold" onclick="showReviewModal('${participant.username}')">View Board</button>`;
+                pendingList.appendChild(li);
+            });
+            
+            pendingRequests.forEach(request => {
+                const li = document.createElement('li');
+                li.className = `p-2 rounded-md shadow bg-yellow-400 flex justify-between items-center`;
+                li.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="font-bold">${request.username}</span>
+                        <span class="text-sm">${request.achievementName}</span>
+                    </div>
+                    <div>
+                        <button class="py-1 px-3 rounded-md bg-green-500 text-white font-bold" onclick="markAsCompleted('${request.username}', '${request.achievementName}')">Complete</button>
+                    </div>
+                `;
+                reviewRequestsList.appendChild(li);
             });
         }
         
