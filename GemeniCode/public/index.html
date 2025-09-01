@@ -447,9 +447,6 @@
                 // Find completed status from all participants
                 const completed = lobbyState.participants.map(p => p.completedAchievements).flat().find(a => a.name === achievement.name);
                 
-                // Find pending status from all participants
-                const isPending = lobbyState.participants.map(p => p.pendingReview).flat().includes(achievement.name);
-                
                 cell.classList.remove('bg-yellow-400', 'cell-pending', 'bg-red-500', 'cell-red', 'bg-blue-500', 'cell-blue');
                 if (completed) {
                     if (completed.team === 'red') {
@@ -457,21 +454,21 @@
                     } else if (completed.team === 'blue') {
                         cell.classList.add('bg-blue-500', 'cell-blue');
                     }
-                } else if (isPending) {
+                } else if (localSelectedAchievements.includes(achievement.name)) {
                     cell.classList.add('bg-yellow-400', 'cell-pending');
                 }
                 
                 // Add event listener for selection to the main cell
                 cell.addEventListener('click', () => {
                     // Check if the current user is a participant and the cell is not already claimed
-                    if (isParticipant && !completed && !isPending) {
+                    if (isParticipant && !completed) {
                          const index = localSelectedAchievements.indexOf(achievement.name);
                          if (index > -1) {
                              localSelectedAchievements.splice(index, 1);
-                             cell.classList.remove('bg-yellow-400');
+                             cell.classList.remove('bg-yellow-400', 'cell-pending');
                          } else {
                              localSelectedAchievements.push(achievement.name);
-                             cell.classList.add('bg-yellow-400');
+                             cell.classList.add('bg-yellow-400', 'cell-pending');
                          }
                     }
                 });
