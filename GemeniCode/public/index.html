@@ -140,22 +140,6 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
-        .chat-container {
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            background-color: #f9fafb;
-            margin-bottom: 0.5rem;
-        }
-        .chat-input-container {
-            display: flex;
-        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -284,24 +268,12 @@
             if (isParticipant) {
                 lobbyContent.innerHTML = `
                     <p class="text-xl font-bold text-center mb-4">Your Team: <span id="my-team"></span></p>
-                    <div class="flex space-x-4 justify-center mb-4">
-                        <button id="board-tab-btn" class="bg-gray-300 py-2 px-4 rounded-md font-bold" onclick="showParticipantTab('board')">Bingo Board</button>
-                        <button id="chat-tab-btn" class="bg-gray-300 py-2 px-4 rounded-md font-bold" onclick="showParticipantTab('chat')">Team Chat</button>
-                    </div>
                     <div id="participant-board-container" class="max-w-4xl mx-auto">
                         <div id="participant-bingo-board" class="bingo-grid"></div>
                         <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" onclick="requestReview()">Request Review</button>
                     </div>
-                    <div id="participant-chat-container" class="chat-container hidden">
-                        <div id="chat-messages" class="chat-messages rounded-md shadow"></div>
-                        <div class="chat-input-container">
-                            <input type="text" id="chat-input" class="flex-grow p-3 border rounded-md mr-2" placeholder="Type a message...">
-                            <button id="chat-send-btn" class="btn-primary py-2 px-4 rounded-md font-bold" onclick="sendTeamMessage()">Send</button>
-                        </div>
-                    </div>
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
-                showParticipantTab('board');
             } else {
                 lobbyContent.innerHTML = `
                     <div class="flex justify-between items-center mb-4">
@@ -333,33 +305,6 @@
                 `;
             }
             showScreen('lobby-screen');
-        }
-
-        window.showParticipantTab = function(tab) {
-            const boardContainer = document.getElementById('participant-board-container');
-            const chatContainer = document.getElementById('participant-chat-container');
-
-            if (boardContainer) boardContainer.classList.add('hidden');
-            if (chatContainer) chatContainer.classList.add('hidden');
-            
-            document.getElementById('board-tab-btn').classList.remove('bg-indigo-600', 'text-white');
-            document.getElementById('board-tab-btn').classList.add('bg-gray-300');
-            document.getElementById('chat-tab-btn').classList.remove('bg-indigo-600', 'text-white');
-            document.getElementById('chat-tab-btn').classList.add('bg-gray-300');
-            
-            if (tab === 'board') {
-                if (boardContainer) {
-                    boardContainer.classList.remove('hidden');
-                    document.getElementById('board-tab-btn').classList.remove('bg-gray-300');
-                    document.getElementById('board-tab-btn').classList.add('bg-indigo-600', 'text-white');
-                }
-            } else {
-                if (chatContainer) {
-                    chatContainer.classList.remove('hidden');
-                    document.getElementById('chat-tab-btn').classList.remove('bg-gray-300');
-                    document.getElementById('chat-tab-btn').classList.add('bg-indigo-600', 'text-white');
-                }
-            }
         }
 
         window.showModal = function(modalId, title = '', message = '') {
@@ -468,13 +413,10 @@
         }
         
         window.markAsCompleted = function(username, achievementName) {
-            const participantData = globalLobbyState.participants.find(p => p.username === username);
-            if (!participantData) return;
             socket.emit('markComplete', {
                 roomCode: currentRoomCode,
                 username,
-                achievementName,
-                team: participantData.team
+                achievementName
             });
             closeModal('review-modal');
         }
@@ -503,8 +445,6 @@
             updateBoardState(
                 boardContainer,
                 globalLobbyState.bingoBoard,
-                globalLobbyState.boardSize,
-                participantData.completedAchievements,
                 participantData.pendingReview,
                 username
             );
@@ -535,43 +475,20 @@
                 team
             });
         }
-
-        window.sendTeamMessage = function() {
-            const chatInput = document.getElementById('chat-input');
-            const message = chatInput.value.trim();
-            if (message && currentRoomCode && currentUsername && currentTeam) {
-                socket.emit('teamMessage', {
-                    roomCode: currentRoomCode,
-                    username: currentUsername,
-                    message,
-                    team: currentTeam
-                });
-                chatInput.value = '';
-            }
-        };
         
         socket.on('lobbyUpdate', (lobbyState) => {
             globalLobbyState = lobbyState;
             
             const isAdmin = lobbyState.adminCode === currentAdminCode;
-            let completedAchievements = [];
-            let pendingAchievements = [];
 
             if (isAdmin) {
-                completedAchievements = lobbyState.participants.flatMap(p => p.completedAchievements);
-                pendingAchievements = lobbyState.participants.flatMap(p => p.pendingReview);
-                
                 const boardContainer = document.getElementById('admin-bingo-board');
                 if (boardContainer.innerHTML === '') {
                     renderInitialBoard(boardContainer, lobbyState.bingoBoard, lobbyState.boardSize);
                 }
                 updateBoardState(
                     boardContainer,
-                    lobbyState.bingoBoard,
-                    lobbyState.boardSize,
-                    completedAchievements,
-                    pendingAchievements,
-                    null
+                    lobbyState.bingoBoard
                 );
                 updateAdminDashboard(lobbyState);
             }
@@ -591,8 +508,6 @@
                     updateBoardState(
                         boardContainer,
                         globalLobbyState.bingoBoard,
-                        globalLobbyState.boardSize,
-                        globalLobbyState.participants.flatMap(p => p.completedAchievements),
                         allPending
                     );
                 }
@@ -604,14 +519,6 @@
                 socket.emit('joinRoom', { roomCode: currentRoomCode });
                 showLobbyScreen('participant');
             }
-        });
-        
-        socket.on('teamMessage', (data) => {
-            const chatMessages = document.getElementById('chat-messages');
-            const messageElement = document.createElement('div');
-            messageElement.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         });
 
         function updateAdminDashboard(lobbyState) {
@@ -661,39 +568,39 @@
             
             pendingRequests.forEach(request => {
                 const li = document.createElement('li');
-                li.className = `p-2 rounded-md shadow bg-yellow-400 flex justify-between items-center`;
+                li.className = `p-2 rounded-md shadow bg-yellow-400 flex flex-col`;
                 li.innerHTML = `
-                    <div class="flex flex-col">
+                    <div class="flex-1">
                         <span class="font-bold">${request.username}</span>
-                        <span class="text-sm">${request.achievementName}</span>
+                        <p class="text-sm mt-1">${request.achievementName}</p>
                     </div>
-                    <div>
-                        <button class="py-1 px-3 rounded-md bg-green-500 text-white font-bold mr-2" onclick="markAsCompleted('${request.username}', '${request.achievementName}')">Complete</button>
-                        <button class="py-1 px-3 rounded-md bg-gray-500 text-white font-bold" onclick="dismissReview('${request.username}', '${request.achievementName}')">Dismiss</button>
+                    <div class="mt-2">
+                        <button class="w-full py-1 px-3 rounded-md bg-green-500 text-white font-bold text-xs" onclick="markAsCompleted('${request.username}', '${request.achievementName}')">Mark as Completed</button>
+                        <button class="w-full mt-1 py-1 px-3 rounded-md bg-gray-500 text-white font-bold text-xs" onclick="dismissReview('${request.username}', '${request.achievementName}')">Dismiss</button>
                     </div>
                 `;
                 reviewRequestsList.appendChild(li);
             });
         }
         
-        function updateBoardState(boardContainer, board, boardSize, completedAchievements, pendingAchievements, reviewUsername = null) {
+        function updateBoardState(boardContainer, board, pendingAchievements = [], reviewUsername = null) {
             const cells = boardContainer.children;
-            board.forEach((achievement, index) => {
+            // Use Object.values to get an array of achievements from the board object
+            const achievementsArray = Object.values(board);
+
+            achievementsArray.forEach((achievement, index) => {
                 const cell = cells[index];
                 if (!cell) return;
-
-                const completed = completedAchievements.find(a => a.name === achievement.name);
+                
                 const isPending = pendingAchievements.includes(achievement.name);
                 
                 const completeBtn = cell.querySelector('.complete-btn');
                 
                 cell.classList.remove('bg-yellow-400', 'cell-pending', 'bg-red-500', 'cell-red', 'bg-blue-500', 'cell-blue');
-                if (completed) {
-                    if (completed.team === 'red') {
-                        cell.classList.add('bg-red-500', 'cell-red');
-                    } else if (completed.team === 'blue') {
-                        cell.classList.add('bg-blue-500', 'cell-blue');
-                    }
+                if (achievement.team === 'red') {
+                    cell.classList.add('bg-red-500', 'cell-red');
+                } else if (achievement.team === 'blue') {
+                    cell.classList.add('bg-blue-500', 'cell-blue');
                 } else if (isPending) {
                     cell.classList.add('bg-yellow-400', 'cell-pending');
                 }
@@ -703,7 +610,7 @@
                         const newBtn = document.createElement('button');
                         newBtn.textContent = 'Mark Complete';
                         newBtn.className = 'complete-btn mt-auto bg-green-500 text-white font-bold rounded-md';
-                        newBtn.onclick = () => markAsCompleted(reviewUsername, achievement.name);
+                        newBtn.onclick = () => markAsCompleted(reviewUsername, achievement.name, achievement.team);
                         cell.appendChild(newBtn);
                     } else if (!isPending && completeBtn) {
                         cell.removeChild(completeBtn);
@@ -720,7 +627,8 @@
             boardContainer.innerHTML = '';
             boardContainer.style.gridTemplateColumns = `repeat(${boardSize}, minmax(0, 1fr))`;
             
-            board.forEach(achievement => {
+            // Use Object.values to iterate over the achievements
+            Object.values(board).forEach(achievement => {
                 const cell = createBingoCell(achievement);
                 boardContainer.appendChild(cell);
             });
@@ -783,8 +691,6 @@
                          updateBoardState(
                             boardContainer,
                             globalLobbyState.bingoBoard,
-                            globalLobbyState.boardSize,
-                            globalLobbyState.participants.flatMap(p => p.completedAchievements),
                             allPending
                         );
                      }
