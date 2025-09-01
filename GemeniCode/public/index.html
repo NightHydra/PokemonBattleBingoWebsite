@@ -158,7 +158,7 @@
 
         <!-- In-Lobby Screens -->
         <div id="lobby-screen" class="hidden">
-            <h2 id="lobby-header" class="text-2xl font-bold text-center mb-4"></h2>
+            <h2 id="lobby-header" class="text-3xl font-bold text-center mb-6"></h2>
             <div id="lobby-content">
                 <!-- Content will be injected here by JS -->
             </div>
@@ -240,8 +240,13 @@
                 `;
             } else { // Admin
                 lobbyContent.innerHTML = `
-                    <p class="text-lg font-bold">Room Code: <span id="admin-room-code">${currentRoomCode}</span></p>
-                    <p class="text-md mb-4">Admin Code: <span id="admin-admin-code">${currentAdminCode}</span></p>
+                    <div class="flex justify-between items-center mb-4">
+                        <p class="text-lg font-bold">Room Code: <span id="admin-room-code">${currentRoomCode}</span></p>
+                        <p class="text-md">Admin Code: <span id="admin-admin-code">${currentAdminCode}</span></p>
+                    </div>
+                    <div class="max-w-md mx-auto mb-4">
+                        <div id="admin-bingo-board" class="bingo-grid grid gap-2"></div>
+                    </div>
                     <h3 class="text-xl font-bold mb-2">Pending Requests</h3>
                     <ul id="pending-participants-list" class="mb-4 space-y-2"></ul>
                     <h3 class="text-xl font-bold mb-2">Active Participants</h3>
@@ -389,9 +394,22 @@
                 if (participant) {
                     document.getElementById('request-review-btn').style.display = 'block';
                     document.getElementById('my-team').textContent = participant.team.toUpperCase();
-                    updateBingoBoard('participant-bingo-board', lobbyState);
+                    // Participant's board shows all completed achievements, but only their own local selections
+                    updateBingoBoard(
+                        'participant-bingo-board',
+                        lobbyState.bingoBoard,
+                        lobbyState.participants.flatMap(p => p.completedAchievements),
+                        localSelectedAchievements
+                    );
                 }
             } else { // Admin
+                // Admin's board shows all completed and all pending achievements from all participants
+                updateBingoBoard(
+                    'admin-bingo-board',
+                    lobbyState.bingoBoard,
+                    lobbyState.participants.flatMap(p => p.completedAchievements),
+                    lobbyState.participants.flatMap(p => p.pendingReview)
+                );
                 updateAdminDashboard(lobbyState);
             }
         });
@@ -438,14 +456,14 @@
             });
         }
         
-        function updateBingoBoard(boardContainerId, lobbyState) {
+        function updateBingoBoard(boardContainerId, board, completedAchievements, pendingAchievements) {
             const boardContainer = document.getElementById(boardContainerId);
             boardContainer.innerHTML = '';
-            lobbyState.bingoBoard.forEach(achievement => {
+            board.forEach(achievement => {
                 const cell = createBingoCell(achievement);
                 
-                // Find completed status from all participants
-                const completed = lobbyState.participants.map(p => p.completedAchievements).flat().find(a => a.name === achievement.name);
+                const completed = completedAchievements.find(a => a.name === achievement.name);
+                const isPending = pendingAchievements.includes(achievement.name);
                 
                 cell.classList.remove('bg-yellow-400', 'cell-pending', 'bg-red-500', 'cell-red', 'bg-blue-500', 'cell-blue');
                 if (completed) {
@@ -454,14 +472,13 @@
                     } else if (completed.team === 'blue') {
                         cell.classList.add('bg-blue-500', 'cell-blue');
                     }
-                } else if (localSelectedAchievements.includes(achievement.name)) {
+                } else if (isPending) {
                     cell.classList.add('bg-yellow-400', 'cell-pending');
                 }
                 
-                // Add event listener for selection to the main cell
-                cell.addEventListener('click', () => {
-                    // Check if the current user is a participant and the cell is not already claimed
-                    if (isParticipant && !completed) {
+                // Add event listener for selection only if it's a participant and the cell is not claimed
+                if (isParticipant && !completed) {
+                    cell.addEventListener('click', () => {
                          const index = localSelectedAchievements.indexOf(achievement.name);
                          if (index > -1) {
                              localSelectedAchievements.splice(index, 1);
@@ -470,8 +487,14 @@
                              localSelectedAchievements.push(achievement.name);
                              cell.classList.add('bg-yellow-400', 'cell-pending');
                          }
-                    }
-                });
+                         updateBingoBoard(
+                            'participant-bingo-board', 
+                            globalLobbyState.bingoBoard,
+                            globalLobbyState.participants.flatMap(p => p.completedAchievements),
+                            localSelectedAchievements
+                        );
+                    });
+                }
                 boardContainer.appendChild(cell);
             });
         }
