@@ -14,7 +14,7 @@
             color: #1f2937;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
         }
         .btn-primary {
             background-color: #4f46e5;
@@ -247,15 +247,23 @@
                     <div class="max-w-md mx-auto mb-4">
                         <div id="admin-bingo-board" class="bingo-grid grid gap-2"></div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <h3 class="text-xl font-bold mb-2">Active Participants</h3>
-                            <ul id="active-participants-list" class="mb-4 space-y-2"></ul>
+                            <h3 class="text-xl font-bold mb-2">Pending Participants</h3>
+                            <ul id="pending-participants-list" class="mb-4 space-y-2"></ul>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold mb-2">Pending Review Requests</h3>
-                            <ul id="pending-review-requests" class="mb-4 space-y-2"></ul>
+                            <h3 class="text-xl font-bold mb-2">Team Red</h3>
+                            <ul id="red-team-list" class="mb-4 space-y-2"></ul>
                         </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Team Blue</h3>
+                            <ul id="blue-team-list" class="mb-4 space-y-2"></ul>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h3 class="text-xl font-bold mb-2">Pending Review Requests</h3>
+                        <ul id="pending-review-requests" class="mb-4 space-y-2"></ul>
                     </div>
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
@@ -427,16 +435,22 @@
         });
         
         function updateAdminDashboard(lobbyState) {
-            const pendingList = document.getElementById('active-participants-list');
+            const pendingList = document.getElementById('pending-participants-list');
+            const redTeamList = document.getElementById('red-team-list');
+            const blueTeamList = document.getElementById('blue-team-list');
             const reviewRequestsList = document.getElementById('pending-review-requests');
-            if (!pendingList || !reviewRequestsList) return;
             
             pendingList.innerHTML = '';
+            redTeamList.innerHTML = '';
+            blueTeamList.innerHTML = '';
             reviewRequestsList.innerHTML = '';
             
             const pendingParticipants = lobbyState.pendingParticipants || [];
             const activeParticipants = lobbyState.participants || [];
             const pendingRequests = lobbyState.pendingRequests || [];
+            
+            const redTeamMembers = activeParticipants.filter(p => p.team === 'red');
+            const blueTeamMembers = activeParticipants.filter(p => p.team === 'blue');
 
             pendingParticipants.forEach(pendingUser => {
                 const li = document.createElement('li');
@@ -449,12 +463,20 @@
                 pendingList.appendChild(li);
             });
 
-            activeParticipants.forEach(participant => {
+            redTeamMembers.forEach(participant => {
                 const li = document.createElement('li');
-                li.className = `p-2 rounded-md shadow bg-gray-200 flex justify-between items-center`;
-                li.innerHTML = `<span>${participant.username} (${participant.team})</span>
-                                <button class="py-1 px-3 rounded-md bg-blue-500 text-white font-bold" onclick="showReviewModal('${participant.username}')">View Board</button>`;
-                pendingList.appendChild(li);
+                li.className = `p-2 rounded-md shadow bg-red-500 text-white flex justify-between items-center`;
+                li.innerHTML = `<span>${participant.username}</span>
+                                <button class="py-1 px-3 rounded-md bg-white text-gray-800 font-bold" onclick="showReviewModal('${participant.username}')">View Board</button>`;
+                redTeamList.appendChild(li);
+            });
+            
+            blueTeamMembers.forEach(participant => {
+                const li = document.createElement('li');
+                li.className = `p-2 rounded-md shadow bg-blue-500 text-white flex justify-between items-center`;
+                li.innerHTML = `<span>${participant.username}</span>
+                                <button class="py-1 px-3 rounded-md bg-white text-gray-800 font-bold" onclick="showReviewModal('${participant.username}')">View Board</button>`;
+                blueTeamList.appendChild(li);
             });
             
             pendingRequests.forEach(request => {
