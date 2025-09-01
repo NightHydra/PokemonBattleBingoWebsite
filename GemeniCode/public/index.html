@@ -189,6 +189,20 @@
             <button class="btn-primary py-2 px-4 rounded-md" onclick="closeModal('custom-modal')">OK</button>
         </div>
     </div>
+    
+    <!-- Admin Manual Change Modal -->
+    <div id="admin-manual-modal" class="modal">
+        <div class="modal-content text-center">
+            <span class="close-btn" onclick="closeModal('admin-manual-modal')">&times;</span>
+            <h3 id="manual-modal-title" class="text-2xl font-bold mb-4">Manual Board Update</h3>
+            <p id="manual-modal-achievement" class="text-lg font-bold mb-4"></p>
+            <div class="grid grid-cols-1 gap-4">
+                <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md" onclick="setAchievementTeam('red')">Mark for Red Team</button>
+                <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md" onclick="setAchievementTeam('blue')">Mark for Blue Team</button>
+                <button class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-md" onclick="setAchievementTeam(null)">Clear</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const socket = io();
@@ -198,6 +212,7 @@
         let isParticipant = false;
         let localSelectedAchievements = [];
         let globalLobbyState = null;
+        let selectedAdminAchievement = null;
 
         // UI screen management
         const screens = ['landing-screen', 'create-lobby-screen', 'join-lobby-screen', 'lobby-screen'];
@@ -402,6 +417,22 @@
             showModal('review-modal');
         }
 
+        window.showAdminManualModal = function(achievementName) {
+            selectedAdminAchievement = achievementName;
+            document.getElementById('manual-modal-achievement').textContent = selectedAdminAchievement;
+            showModal('admin-manual-modal');
+        }
+        
+        window.setAchievementTeam = function(team) {
+            if (!selectedAdminAchievement) return;
+            socket.emit('manualChange', {
+                roomCode: currentRoomCode,
+                achievementName: selectedAdminAchievement,
+                newTeam: team
+            });
+            closeModal('admin-manual-modal');
+        }
+        
         window.approveParticipant = function(username, team) {
             socket.emit('approveJoin', {
                 roomCode: currentRoomCode,
@@ -421,7 +452,7 @@
                     // Combine server-side pending with client-side selected for display
                     const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
 
-                    updateBingoBoard(
+                    updateParticipantBingoBoard(
                         'participant-bingo-board',
                         lobbyState.bingoBoard,
                         lobbyState.participants.flatMap(p => p.completedAchievements),
@@ -430,7 +461,7 @@
                 }
             } else { // Admin
                 // Admin's board shows all completed and all pending achievements from all participants
-                updateBingoBoard(
+                updateAdminBingoBoard(
                     'admin-bingo-board',
                     lobbyState.bingoBoard,
                     lobbyState.participants.flatMap(p => p.completedAchievements),
@@ -509,7 +540,7 @@
             });
         }
         
-        function updateBingoBoard(boardContainerId, board, completedAchievements, pendingAchievements) {
+        function updateParticipantBingoBoard(boardContainerId, board, completedAchievements, pendingAchievements) {
             const boardContainer = document.getElementById(boardContainerId);
             boardContainer.innerHTML = '';
             board.forEach(achievement => {
@@ -529,8 +560,7 @@
                     cell.classList.add('bg-yellow-400', 'cell-pending');
                 }
                 
-                // Add event listener for selection only if it's a participant and the cell is not claimed
-                if (isParticipant && !completed) {
+                if (!completed) {
                     cell.addEventListener('click', () => {
                          const index = localSelectedAchievements.indexOf(achievement.name);
                          if (index > -1) {
@@ -538,11 +568,10 @@
                          } else {
                              localSelectedAchievements.push(achievement.name);
                          }
-                         // Re-render the board with the updated local selected achievements
                          const participant = globalLobbyState.participants.find(p => p.username === currentUsername);
                          if (participant) {
                              const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
-                             updateBingoBoard(
+                             updateParticipantBingoBoard(
                                 'participant-bingo-board',
                                 globalLobbyState.bingoBoard,
                                 globalLobbyState.participants.flatMap(p => p.completedAchievements),
@@ -551,6 +580,32 @@
                          }
                     });
                 }
+                boardContainer.appendChild(cell);
+            });
+        }
+        
+        function updateAdminBingoBoard(boardContainerId, board, completedAchievements, pendingAchievements) {
+            const boardContainer = document.getElementById(boardContainerId);
+            boardContainer.innerHTML = '';
+            board.forEach(achievement => {
+                const cell = createBingoCell(achievement);
+
+                const completed = completedAchievements.find(a => a.name === achievement.name);
+                const isPending = pendingAchievements.includes(achievement.name);
+                
+                cell.classList.remove('bg-yellow-400', 'cell-pending', 'bg-red-500', 'cell-red', 'bg-blue-500', 'cell-blue');
+                if (completed) {
+                    if (completed.team === 'red') {
+                        cell.classList.add('bg-red-500', 'cell-red');
+                    } else if (completed.team === 'blue') {
+                        cell.classList.add('bg-blue-500', 'cell-blue');
+                    }
+                } else if (isPending) {
+                    cell.classList.add('bg-yellow-400', 'cell-pending');
+                }
+                
+                cell.addEventListener('click', () => showAdminManualModal(achievement.name));
+                
                 boardContainer.appendChild(cell);
             });
         }

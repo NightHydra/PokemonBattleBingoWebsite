@@ -200,6 +200,26 @@ io.on('connection', (socket) => {
             io.to(roomCode).emit('lobbyUpdate', lobby);
         }
     });
+    
+    socket.on('manualChange', ({ roomCode, achievementName, newTeam }) => {
+        const lobby = LOBBIES[roomCode];
+        if (lobby) {
+            // Clear any pending requests for this achievement first
+            lobby.pendingRequests = lobby.pendingRequests.filter(req => req.achievementName !== achievementName);
+            
+            // Iterate through all participants and update their completed achievements
+            lobby.participants.forEach(participant => {
+                // Remove the achievement if it's already there with a different team
+                participant.completedAchievements = participant.completedAchievements.filter(a => a.name !== achievementName);
+                
+                // Add the new completed achievement if a new team is specified
+                if (newTeam) {
+                    participant.completedAchievements.push({ name: achievementName, team: newTeam });
+                }
+            });
+            io.to(roomCode).emit('lobbyUpdate', lobby);
+        }
+    });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
