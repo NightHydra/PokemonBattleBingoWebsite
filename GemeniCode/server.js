@@ -1,5 +1,7 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const { Server } = require("socket.io");
 
 const app = express();
@@ -12,39 +14,28 @@ app.use(express.json());
 // In-memory data store for lobbies
 const lobbies = {};
 
-const achievements = [
-    { name: "First Blood", description: "First to get an achievement." },
-    { name: "Team Player", description: "Work with a teammate to complete an achievement." },
-    { name: "Bingo!", description: "Complete a row, column, or diagonal." },
-    { name: "Full Board", description: "Complete every achievement on the board." },
-    { name: "Speed Demon", description: "Complete an achievement in under a minute." },
-    { name: "Social Butterfly", description: "Complete an achievement with someone you just met." },
-    { name: "Lone Wolf", description: "Complete an achievement by yourself." },
-    { name: "Creative Solution", description: "Complete an achievement in an unconventional way." },
-    { name: "Golden Star", description: "Get a perfect score on an achievement." },
-    { name: "Epic Fail", description: "Attempt an achievement and fail spectacularly." },
-    { name: "Ghost", description: "Complete an achievement without anyone noticing." },
-    { name: "High Five", description: "High five everyone on your team." },
-    { name: "Joke of the Day", description: "Tell a joke and make at least two people laugh." },
-    { name: "Mime", description: "Communicate using only gestures for five minutes." },
-    { name: "Soundtrack of Success", description: "Play a victory song after completing an achievement." },
-    { name: "Secret Handshake", description: "Create a secret handshake with a teammate." },
-    { name: "Time Traveler", description: "Correctly guess the time without looking at a clock." },
-    { name: "Human Statue", description: "Stand perfectly still for one minute." },
-    { name: "Memory Master", description: "Recite the first ten digits of pi from memory." },
-    { name: "Ninja", description: "Silently sneak up on a teammate." },
-    { name: "Copycat", description: "Imitate a teammate's mannerisms for two minutes." },
-    { name: "The Architect", description: "Build the tallest tower using only office supplies." },
-    { name: "The Magician", description: "Perform a simple magic trick." },
-    { name: "Storyteller", description: "Create a five-sentence story with a teammate." },
-    { name: "Mind Reader", description: "Guess a teammate's favorite color correctly." },
-    { name: "Juggler", description: "Juggle two or more items for ten seconds." },
-];
+let achievements = [];
+
+// Attempt to read achievements from achievements.json
+const achievementsFilePath = path.join(__dirname, 'achievements.json');
+try {
+    const fileContent = fs.readFileSync(achievementsFilePath, 'utf8');
+    const loadedAchievements = JSON.parse(fileContent);
+    if (Array.isArray(loadedAchievements) && loadedAchievements.length > 0) {
+        achievements = loadedAchievements;
+        console.log(`Successfully loaded ${achievements.length} achievements from achievements.json.`);
+    } else {
+        console.warn('achievements.json is empty or not a valid array. The application may not function correctly.');
+    }
+} catch (error) {
+    console.error('Error reading achievements.json. The application will not function correctly without an achievements file.');
+    console.error(error);
+}
 
 function generateBingoBoard(size) {
     const shuffled = [...achievements].sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, size * size);
     
+    const selected = shuffled.slice(0, size * size);
     // Refactored to return an object instead of an array
     return selected.reduce((board, achievement) => {
         board[achievement.name] = {

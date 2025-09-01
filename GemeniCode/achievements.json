@@ -1,1026 +1,1026 @@
 [
-  {
-    "name": "Newbie",
-    "description": "Start the game for the first time."
-  },
-  {
-    "name": "First Step",
-    "description": "Complete the tutorial."
-  },
-  {
-    "name": "Explorer",
-    "description": "Discover 10 different areas."
-  },
-  {
-    "name": "Globetrotter",
-    "description": "Discover all areas."
-  },
-  {
-    "name": "Hoarder",
-    "description": "Collect 100 items."
-  },
-  {
-    "name": "Collector",
-    "description": "Collect all unique items."
-  },
-  {
-    "name": "First Blood",
-    "description": "Defeat your first enemy."
-  },
-  {
-    "name": "Slayer",
-    "description": "Defeat 100 enemies."
-  },
-  {
-    "name": "Champion",
-    "description": "Defeat 1,000 enemies."
-  },
-  {
-    "name": "Boss Hunter",
-    "description": "Defeat your first boss."
-  },
-  {
-    "name": "King Slayer",
-    "description": "Defeat all bosses."
-  },
-  {
-    "name": "Novice Crafter",
-    "description": "Craft 5 items."
-  },
-  {
-    "name": "Artisan",
-    "description": "Craft 50 items."
-  },
-  {
-    "name": "Grandmaster Crafter",
-    "description": "Craft 500 items."
-  },
-  {
-    "name": "Adept",
-    "description": "Reach level 10."
-  },
-  {
-    "name": "Master",
-    "description": "Reach level 50."
-  },
-  {
-    "name": "Legend",
-    "description": "Reach the maximum level."
-  },
-  {
-    "name": "Wealthy",
-    "description": "Earn 1,000 gold."
-  },
-  {
-    "name": "Tycoon",
-    "description": "Earn 10,000 gold."
-  },
-  {
-    "name": "Millionaire",
-    "description": "Earn 1,000,000 gold."
-  },
-  {
-    "name": "Social Butterfly",
-    "description": "Add 5 friends."
-  },
-  {
-    "name": "Networker",
-    "description": "Add 20 friends."
-  },
-  {
-    "name": "Team Player",
-    "description": "Complete a quest with a friend."
-  },
-  {
-    "name": "Hero of the People",
-    "description": "Complete 50 quests."
-  },
-  {
-    "name": "Quest Master",
-    "description": "Complete all main quests."
-  },
-  {
-    "name": "The Seeker",
-    "description": "Complete all side quests."
-  },
-  {
-    "name": "First Catch",
-    "description": "Catch your first fish."
-  },
-  {
-    "name": "Fisherman",
-    "description": "Catch 100 fish."
-  },
-  {
-    "name": "Ocean King",
-    "description": "Catch a legendary fish."
-  },
-  {
-    "name": "Farmer",
-    "description": "Harvest 100 crops."
-  },
-  {
-    "name": "Green Thumb",
-    "description": "Harvest all crop types."
-  },
-  {
-    "name": "Architect",
-    "description": "Build 5 structures."
-  },
-  {
-    "name": "City Planner",
-    "description": "Build 50 structures."
-  },
-  {
-    "name": "First Gem",
-    "description": "Mine 10 ores."
-  },
-  {
-    "name": "Miner",
-    "description": "Mine 100 ores."
-  },
-  {
-    "name": "Geologist",
-    "description": "Mine 1,000 ores."
-  },
-  {
-    "name": "First Spell",
-    "description": "Cast a spell for the first time."
-  },
-  {
-    "name": "Sorcerer",
-    "description": "Cast 100 spells."
-  },
-  {
-    "name": "Arcane Master",
-    "description": "Learn all spells."
-  },
-  {
-    "name": "Potion Maker",
-    "description": "Brew 10 potions."
-  },
-  {
-    "name": "Alchemist",
-    "description": "Brew all potion types."
-  },
-  {
-    "name": "Dead Shot",
-    "description": "Get a headshot."
-  },
-  {
-    "name": "Sharpshooter",
-    "description": "Get 100 headshots."
-  },
-  {
-    "name": "Ranger",
-    "description": "Get 1,000 headshots."
-  },
-  {
-    "name": "The Unstoppable",
-    "description": "Get a 10-kill streak."
-  },
-  {
-    "name": "Immortal",
-    "description": "Get a 25-kill streak."
-  },
-  {
-    "name": "Overachiever",
-    "description": "Complete 100 achievements."
-  },
-  {
-    "name": "Completionist",
-    "description": "Complete all achievements."
-  },
-  {
-    "name": "Secret Keeper",
-    "description": "Find a hidden secret."
-  },
-  {
-    "name": "Ghost",
-    "description": "Complete a mission without being detected."
-  },
-  {
-    "name": "Speed Demon",
-    "description": "Complete a mission in under 5 minutes."
-  },
-  {
-    "name": "The Negotiator",
-    "description": "Succeed in 5 dialogue options."
-  },
-  {
-    "name": "Charmer",
-    "description": "Succeed in 50 dialogue options."
-  },
-  {
-    "name": "The Diplomat",
-    "description": "Succeed in 100 dialogue options."
-  },
-  {
-    "name": "Mountaineer",
-    "description": "Reach the highest point in the game."
-  },
-  {
-    "name": "Deep Diver",
-    "description": "Reach the lowest point in the game."
-  },
-  {
-    "name": "First Aid",
-    "description": "Heal a teammate."
-  },
-  {
-    "name": "The Healer",
-    "description": "Heal a teammate 100 times."
-  },
-  {
-    "name": "Savior",
-    "description": "Revive a teammate."
-  },
-  {
-    "name": "Phoenix",
-    "description": "Revive a teammate 50 times."
-  },
-  {
-    "name": "Puzzler",
-    "description": "Solve 10 puzzles."
-  },
-  {
-    "name": "Enigma",
-    "description": "Solve all puzzles."
-  },
-  {
-    "name": "One Hit Wonder",
-    "description": "Defeat an enemy with a single attack."
-  },
-  {
-    "name": "Executioner",
-    "description": "Perform 100 finishing moves."
-  },
-  {
-    "name": "The Crusher",
-    "description": "Deal 10,000 damage in a single hit."
-  },
-  {
-    "name": "The Tank",
-    "description": "Take 10,000 damage without dying."
-  },
-  {
-    "name": "Evasion Master",
-    "description": "Dodge 100 attacks."
-  },
-  {
-    "name": "Perfect Block",
-    "description": "Block 100 attacks perfectly."
-  },
-  {
-    "name": "The Courier",
-    "description": "Deliver 10 packages."
-  },
-  {
-    "name": "Logistician",
-    "description": "Deliver 50 packages."
-  },
-  {
-    "name": "Pathfinder",
-    "description": "Discover 5 hidden paths."
-  },
-  {
-    "name": "Trailblazer",
-    "description": "Discover all hidden paths."
-  },
-  {
-    "name": "Archaeologist",
-    "description": "Find 5 hidden treasures."
-  },
-  {
-    "name": "Treasure Hunter",
-    "description": "Find all hidden treasures."
-  },
-  {
-    "name": "Librarian",
-    "description": "Read 10 books or scrolls."
-  },
-  {
-    "name": "Scholar",
-    "description": "Read all books or scrolls."
-  },
-  {
-    "name": "First Ride",
-    "description": "Mount a mount for the first time."
-  },
-  {
-    "name": "Rider",
-    "description": "Ride a mount for 1 hour."
-  },
-  {
-    "name": "Stable Master",
-    "description": "Collect all mount types."
-  },
-  {
-    "name": "The Gourmet",
-    "description": "Cook 10 different recipes."
-  },
-  {
-    "name": "Master Chef",
-    "description": "Cook all recipes."
-  },
-  {
-    "name": "Master of Disguise",
-    "description": "Wear 5 different outfits."
-  },
-  {
-    "name": "Fashionista",
-    "description": "Collect all outfit types."
-  },
-  {
-    "name": "The Gambler",
-    "description": "Win 5 games of chance."
-  },
-  {
-    "name": "High Roller",
-    "description": "Win 50 games of chance."
-  },
-  {
-    "name": "Strategist",
-    "description": "Win 10 multiplayer matches."
-  },
-  {
-    "name": "Conqueror",
-    "description": "Win 50 multiplayer matches."
-  },
-  {
-    "name": "The King",
-    "description": "Win 100 multiplayer matches."
-  },
-  {
-    "name": "Photographer",
-    "description": "Take 10 photos in-game."
-  },
-  {
-    "name": "Documentarian",
-    "description": "Take 100 photos in-game."
-  },
-  {
-    "name": "The Architect",
-    "description": "Build a structure with 100 pieces."
-  },
-  {
-    "name": "The Sculptor",
-    "description": "Build a structure with 500 pieces."
-  },
-  {
-    "name": "Destroyer",
-    "description": "Destroy 100 objects."
-  },
-  {
-    "name": "Wrecker",
-    "description": "Destroy 1,000 objects."
-  },
-  {
-    "name": "Acrobat",
-    "description": "Perform 100 jumps."
-  },
-  {
-    "name": "Daredevil",
-    "description": "Perform a risky jump successfully."
-  },
-  {
-    "name": "The Wanderer",
-    "description": "Travel 100 kilometers."
-  },
-  {
-    "name": "The Traveler",
-    "description": "Travel 1,000 kilometers."
-  },
-  {
-    "name": "Cartographer",
-    "description": "Explore 50% of the world map."
-  },
-  {
-    "name": "Map Maker",
-    "description": "Explore 100% of the world map."
-  },
-  {
-    "name": "The Messenger",
-    "description": "Send 10 in-game messages."
-  },
-  {
-    "name": "The Communicator",
-    "description": "Send 100 in-game messages."
-  },
-  {
-    "name": "The Entertainer",
-    "description": "Use 5 emotes."
-  },
-  {
-    "name": "The Showman",
-    "description": "Use all emotes."
-  },
-  {
-    "name": "Backstabber",
-    "description": "Defeat an enemy with a stealth attack."
-  },
-  {
-    "name": "Silent Killer",
-    "description": "Defeat 100 enemies with stealth attacks."
-  },
-  {
-    "name": "The Marksman",
-    "description": "Hit a target from 100 meters away."
-  },
-  {
-    "name": "The Sniper",
-    "description": "Hit a target from 500 meters away."
-  },
-  {
-    "name": "First Upgrade",
-    "description": "Upgrade a weapon or armor."
-  },
-  {
-    "name": "The Smith",
-    "description": "Upgrade a weapon or armor 10 times."
-  },
-  {
-    "name": "Master of Arms",
-    "description": "Fully upgrade a legendary weapon."
-  },
-  {
-    "name": "The Angler",
-    "description": "Catch 10 unique types of fish."
-  },
-  {
-    "name": "The Botanist",
-    "description": "Harvest 10 unique types of plants."
-  },
-  {
-    "name": "The Hunter",
-    "description": "Hunt 10 unique types of animals."
-  },
-  {
-    "name": "The Zoologist",
-    "description": "Hunt all unique types of animals."
-  },
-  {
-    "name": "The Chef",
-    "description": "Cook 10 different meals."
-  },
-  {
-    "name": "The Baker",
-    "description": "Bake 10 different goods."
-  },
-  {
-    "name": "The Brewer",
-    "description": "Brew 10 different beverages."
-  },
-  {
-    "name": "The Winemaker",
-    "description": "Make 10 different types of wine."
-  },
-  {
-    "name": "The Forager",
-    "description": "Find 10 different types of mushrooms."
-  },
-  {
-    "name": "The Mycologist",
-    "description": "Find all unique types of mushrooms."
-  },
-  {
-    "name": "The Gardener",
-    "description": "Grow 10 different types of flowers."
-  },
-  {
-    "name": "The Florist",
-    "description": "Grow all unique types of flowers."
-  },
-  {
-    "name": "The Farmer",
-    "description": "Grow 10 different types of vegetables."
-  },
-  {
-    "name": "The Botanist",
-    "description": "Grow all unique types of vegetables."
-  },
-  {
-    "name": "The Rancher",
-    "description": "Raise 10 different types of animals."
-  },
-  {
-    "name": "The Herdsman",
-    "description": "Raise all unique types of animals."
-  },
-  {
-    "name": "The Zoologist",
-    "description": "Breed 10 different types of animals."
-  },
-  {
-    "name": "The Animal Whisperer",
-    "description": "Breed all unique types of animals."
-  },
-  {
-    "name": "The Builder",
-    "description": "Build 10 different types of buildings."
-  },
-  {
-    "name": "The Architect",
-    "description": "Build all unique types of buildings."
-  },
-  {
-    "name": "The Decorator",
-    "description": "Decorate a house with 10 different items."
-  },
-  {
-    "name": "The Interior Designer",
-    "description": "Decorate a house with 100 different items."
-  },
-  {
-    "name": "The Landscaper",
-    "description": "Create a garden with 10 different plants."
-  },
-  {
-    "name": "The Horticulturalist",
-    "description": "Create a garden with 50 different plants."
-  },
-  {
-    "name": "The Gardener",
-    "description": "Grow 10 different types of fruit."
-  },
-  {
-    "name": "The Pomologist",
-    "description": "Grow all unique types of fruit."
-  },
-  {
-    "name": "The Lumberjack",
-    "description": "Cut down 100 trees."
-  },
-  {
-    "name": "The Forester",
-    "description": "Cut down 1,000 trees."
-  },
-  {
-    "name": "The Woodsman",
-    "description": "Cut down all unique types of trees."
-  },
-  {
-    "name": "The Mason",
-    "description": "Mine 100 stone blocks."
-  },
-  {
-    "name": "The Quarryman",
-    "description": "Mine 1,000 stone blocks."
-  },
-  {
-    "name": "The Prospector",
-    "description": "Mine all unique types of ore."
-  },
-  {
-    "name": "The Scavenger",
-    "description": "Find 10 unique items in the trash."
-  },
-  {
-    "name": "The Ragpicker",
-    "description": "Find 50 unique items in the trash."
-  },
-  {
-    "name": "The Historian",
-    "description": "Find 10 artifacts."
-  },
-  {
-    "name": "The Antiquarian",
-    "description": "Find 50 artifacts."
-  },
-  {
-    "name": "The Scholar",
-    "description": "Discover all lore entries."
-  },
-  {
-    "name": "The Lore Master",
-    "description": "Read all lore entries."
-  },
-  {
-    "name": "The Musician",
-    "description": "Play a musical instrument."
-  },
-  {
-    "name": "The Virtuoso",
-    "description": "Play a song perfectly."
-  },
-  {
-    "name": "The Dancer",
-    "description": "Perform a dance."
-  },
-  {
-    "name": "The Choreographer",
-    "description": "Perform a dance perfectly."
-  },
-  {
-    "name": "The Artist",
-    "description": "Paint a picture."
-  },
-  {
-    "name": "The Painter",
-    "description": "Paint 10 pictures."
-  },
-  {
-    "name": "The Calligrapher",
-    "description": "Write a message."
-  },
-  {
-    "name": "The Scribe",
-    "description": "Write 100 messages."
-  },
-  {
-    "name": "The Poet",
-    "description": "Write a poem."
-  },
-  {
-    "name": "The Bard",
-    "description": "Write 10 poems."
-  },
-  {
-    "name": "The Storyteller",
-    "description": "Tell a story."
-  },
-  {
-    "name": "The Chronicler",
-    "description": "Tell 10 stories."
-  },
-  {
-    "name": "The Comedian",
-    "description": "Tell a joke."
-  },
-  {
-    "name": "The Humorist",
-    "description": "Tell 10 jokes."
-  },
-  {
-    "name": "The Jester",
-    "description": "Tell 50 jokes."
-  },
-  {
-    "name": "The Athlete",
-    "description": "Win a race."
-  },
-  {
-    "name": "The Runner",
-    "description": "Win 10 races."
-  },
-  {
-    "name": "The Champion",
-    "description": "Win 50 races."
-  },
-  {
-    "name": "The Swimmer",
-    "description": "Swim 1,000 meters."
-  },
-  {
-    "name": "The Mariner",
-    "description": "Swim 10,000 meters."
-  },
-  {
-    "name": "The Climber",
-    "description": "Climb a mountain."
-  },
-  {
-    "name": "The Mountaineer",
-    "description": "Climb 10 mountains."
-  },
-  {
-    "name": "The Spelunker",
-    "description": "Explore 5 caves."
-  },
-  {
-    "name": "The Caver",
-    "description": "Explore all caves."
-  },
-  {
-    "name": "The Survivor",
-    "description": "Survive for 10 days."
-  },
-  {
-    "name": "The Nomad",
-    "description": "Survive for 50 days."
-  },
-  {
-    "name": "The Hermit",
-    "description": "Survive for 100 days."
-  },
-  {
-    "name": "The Coder",
-    "description": "Write 10 lines of code."
-  },
-  {
-    "name": "The Developer",
-    "description": "Write 100 lines of code."
-  },
-  {
-    "name": "The Engineer",
-    "description": "Write 1,000 lines of code."
-  },
-  {
-    "name": "The Hacker",
-    "description": "Hack 5 systems."
-  },
-  {
-    "name": "The Cyberpunk",
-    "description": "Hack 50 systems."
-  },
-  {
-    "name": "The Courier",
-    "description": "Deliver 10 messages."
-  },
-  {
-    "name": "The Postman",
-    "description": "Deliver 50 messages."
-  },
-  {
-    "name": "The Messenger",
-    "description": "Deliver 100 messages."
-  },
-  {
-    "name": "The Thief",
-    "description": "Steal 10 items."
-  },
-  {
-    "name": "The Robber",
-    "description": "Steal 50 items."
-  },
-  {
-    "name": "The Burglar",
-    "description": "Steal 100 items."
-  },
-  {
-    "name": "The Assassin",
-    "description": "Assassinate 5 targets."
-  },
-  {
-    "name": "The Hitman",
-    "description": "Assassinate 50 targets."
-  },
-  {
-    "name": "The Professional",
-    "description": "Assassinate 100 targets."
-  },
-  {
-    "name": "The Pilot",
-    "description": "Fly a vehicle for 10 minutes."
-  },
-  {
-    "name": "The Aviator",
-    "description": "Fly a vehicle for 60 minutes."
-  },
-  {
-    "name": "The Astronaut",
-    "description": "Fly a vehicle for 1,000 minutes."
-  },
-  {
-    "name": "The Diver",
-    "description": "Dive for 10 minutes."
-  },
-  {
-    "name": "The Submariner",
-    "description": "Dive for 60 minutes."
-  },
-  {
-    "name": "The Oceanographer",
-    "description": "Dive for 1,000 minutes."
-  },
-  {
-    "name": "The Driver",
-    "description": "Drive a vehicle for 10 kilometers."
-  },
-  {
-    "name": "The Racer",
-    "description": "Drive a vehicle for 100 kilometers."
-  },
-  {
-    "name": "The Rallyist",
-    "description": "Drive a vehicle for 1,000 kilometers."
-  },
-  {
-    "name": "The Gardener",
-    "description": "Harvest 10 crops."
-  },
-  {
-    "name": "The Agriculturist",
-    "description": "Harvest 100 crops."
-  },
-  {
-    "name": "The Farmer",
-    "description": "Harvest 1,000 crops."
-  },
-  {
-    "name": "The Fisherman",
-    "description": "Catch 10 fish."
-  },
-  {
-    "name": "The Angler",
-    "description": "Catch 100 fish."
-  },
-  {
-    "name": "The Fisher King",
-    "description": "Catch 1,000 fish."
-  },
-  {
-    "name": "The Miner",
-    "description": "Mine 10 ores."
-  },
-  {
-    "name": "The Geologist",
-    "description": "Mine 100 ores."
-  },
-  {
-    "name": "The Prospector",
-    "description": "Mine 1,000 ores."
-  },
-  {
-    "name": "The Lumberjack",
-    "description": "Chop 10 trees."
-  },
-  {
-    "name": "The Forester",
-    "description": "Chop 100 trees."
-  },
-  {
-    "name": "The Woodsman",
-    "description": "Chop 1,000 trees."
-  },
-  {
-    "name": "The Hunter",
-    "description": "Hunt 10 animals."
-  },
-  {
-    "name": "The Tracker",
-    "description": "Hunt 100 animals."
-  },
-  {
-    "name": "The Predator",
-    "description": "Hunt 1,000 animals."
-  },
-  {
-    "name": "The Cook",
-    "description": "Cook 10 meals."
-  },
-  {
-    "name": "The Chef",
-    "description": "Cook 100 meals."
-  },
-  {
-    "name": "The Master Chef",
-    "description": "Cook 1,000 meals."
-  },
-  {
-    "name": "The Alchemist",
-    "description": "Brew 10 potions."
-  },
-  {
-    "name": "The Apothecary",
-    "description": "Brew 100 potions."
-  },
-  {
-    "name": "The Potion Master",
-    "description": "Brew 1,000 potions."
-  },
-  {
-    "name": "The Smith",
-    "description": "Craft 10 weapons."
-  },
-  {
-    "name": "The Blacksmith",
-    "description": "Craft 100 weapons."
-  },
-  {
-    "name": "The Weaponsmith",
-    "description": "Craft 1,000 weapons."
-  },
-  {
-    "name": "The Tailor",
-    "description": "Craft 10 pieces of armor."
-  },
-  {
-    "name": "The Armorer",
-    "description": "Craft 100 pieces of armor."
-  },
-  {
-    "name": "The Grandmaster Armorer",
-    "description": "Craft 1,000 pieces of armor."
-  },
-  {
-    "name": "The Scavenger",
-    "description": "Loot 100 containers."
-  },
-  {
-    "name": "The Hoarder",
-    "description": "Loot 1,000 containers."
-  },
-  {
-    "name": "The Thief",
-    "description": "Pickpocket 10 times."
-  },
-  {
-    "name": "The Pickpocket",
-    "description": "Pickpocket 100 times."
-  },
-  {
-    "name": "The Bandit",
-    "description": "Pickpocket 1,000 times."
-  },
-  {
-    "name": "The Trapper",
-    "description": "Set 10 traps."
-  },
-  {
-    "name": "The Hunter",
-    "description": "Set 100 traps."
-  },
-  {
-    "name": "The Assassin",
-    "description": "Set 1,000 traps."
-  },
-  {
-    "name": "The Sniper",
-    "description": "Get 10 headshots."
-  },
-  {
-    "name": "The Sharpshooter",
-    "description": "Get 100 headshots."
-  },
-  {
-    "name": "The Marksman",
-    "description": "Get 1,000 headshots."
-  },
-  {
-    "name": "The Brawler",
-    "description": "Punch 10 enemies."
-  },
-  {
-    "name": "The Boxer",
-    "description": "Punch 100 enemies."
-  },
-  {
-    "name": "The Champion",
-    "description": "Punch 1,000 enemies."
-  },
-  {
-    "name": "The Strategist",
-    "description": "Win 10 games of chess."
-  },
-  {
-    "name": "The Grandmaster",
-    "description": "Win 100 games of chess."
-  },
-  {
-    "name": "The Conqueror",
-    "description": "Win 1,000 games of chess."
-  },
-  {
-    "name": "The Puzzle Solver",
-    "description": "Solve 10 puzzles."
-  },
-  {
-    "name": "The Riddle Master",
-    "description": "Solve 100 puzzles."
-  },
-  {
-    "name": "The Enigma",
-    "description": "Solve 1,000 puzzles."
-  },
-  {
-    "name": "The Collector",
-    "description": "Collect 10 rare items."
-  },
-  {
-    "name": "The Curator",
-    "description": "Collect 100 rare items."
-  },
-  {
-    "name": "The Completionist",
-    "description": "Collect all rare items."
-  },
-  {
-    "name": "The Hoarder",
-    "description": "Fill your inventory."
-  },
-  {
-    "name": "The Pack Rat",
-    "description": "Fill your bank."
-  },
-  {
-    "name": "The Tycoon",
-    "description": "Own 100,000 gold."
-  },
-  {
-    "name": "The Millionaire",
-    "description": "Own 1,000,000 gold."
-  },
-  {
-    "name": "The Billionaire",
-    "description": "Own 1,000,000,000 gold."
-  },
-  {
-    "name": "The Dragon Slayer",
-    "description": "Defeat a dragon."
-  },
-  {
-    "name": "The God Slayer",
-    "description": "Defeat a god."
-  }
+    {
+        "name": "Achievement 1",
+        "description": "Complete the tutorial mission."
+    },
+    {
+        "name": "Achievement 2",
+        "description": "Win a match without dying."
+    },
+    {
+        "name": "Achievement 3",
+        "description": "Get 10 kills in a single round."
+    },
+    {
+        "name": "Achievement 4",
+        "description": "Secure the objective under heavy fire."
+    },
+    {
+        "name": "Achievement 5",
+        "description": "Perform a flawless execution."
+    },
+    {
+        "name": "Achievement 6",
+        "description": "Revive a teammate in the final moments of a match."
+    },
+    {
+        "name": "Achievement 7",
+        "description": "Land a headshot from 50 meters or more."
+    },
+    {
+        "name": "Achievement 8",
+        "description": "Capture the enemy flag without any resistance."
+    },
+    {
+        "name": "Achievement 9",
+        "description": "Win 5 matches in a row."
+    },
+    {
+        "name": "Achievement 10",
+        "description": "Eliminate 3 enemies with a single grenade."
+    },
+    {
+        "name": "Achievement 11",
+        "description": "Destroy a vehicle using only a pistol."
+    },
+    {
+        "name": "Achievement 12",
+        "description": "Get a kill while blinded by a flashbang."
+    },
+    {
+        "name": "Achievement 13",
+        "description": "Successfully sneak past a sentry turret."
+    },
+    {
+        "name": "Achievement 14",
+        "description": "Eliminate an opponent with a melee attack from behind."
+    },
+    {
+        "name": "Achievement 15",
+        "description": "Heal a total of 1000 health points in one match."
+    },
+    {
+        "name": "Achievement 16",
+        "description": "Win a round as the last person standing."
+    },
+    {
+        "name": "Achievement 17",
+        "description": "Find and use a hidden weapon."
+    },
+    {
+        "name": "Achievement 18",
+        "description": "Defend the objective for over 60 seconds."
+    },
+    {
+        "name": "Achievement 19",
+        "description": "Bounce a grenade off a wall to get a kill."
+    },
+    {
+        "name": "Achievement 20",
+        "description": "Eliminate the top-scoring player on the enemy team."
+    },
+    {
+        "name": "Achievement 21",
+        "description": "Break 5 windows in a single round."
+    },
+    {
+        "name": "Achievement 22",
+        "description": "Plant a bomb and have it detonate."
+    },
+    {
+        "name": "Achievement 23",
+        "description": "Disarm a bomb with less than one second remaining."
+    },
+    {
+        "name": "Achievement 24",
+        "description": "Get a kill from an elevated position."
+    },
+    {
+        "name": "Achievement 25",
+        "description": "Eliminate an opponent with a no-scope shot."
+    },
+    {
+        "name": "Achievement 26",
+        "description": "Get a kill with every weapon type in one game."
+    },
+    {
+        "name": "Achievement 27",
+        "description": "Finish a match with a positive kill/death ratio."
+    },
+    {
+        "name": "Achievement 28",
+        "description": "Win a match by a landslide (difference of 500+ points)."
+    },
+    {
+        "name": "Achievement 29",
+        "description": "Call in a support air strike."
+    },
+    {
+        "name": "Achievement 30",
+        "description": "Perform 3 headshots in a row."
+    },
+    {
+        "name": "Achievement 31",
+        "description": "Run over an enemy with a vehicle."
+    },
+    {
+        "name": "Achievement 32",
+        "description": "Eliminate a player who is in mid-air."
+    },
+    {
+        "name": "Achievement 33",
+        "description": "Use a decoy grenade to trick an enemy."
+    },
+    {
+        "name": "Achievement 34",
+        "description": "Get 25 assists in a single match."
+    },
+    {
+        "name": "Achievement 35",
+        "description": "Destroy a piece of enemy cover."
+    },
+    {
+        "name": "Achievement 36",
+        "description": "Capture the point in overtime."
+    },
+    {
+        "name": "Achievement 37",
+        "description": "Kill an enemy with their own grenade."
+    },
+    {
+        "name": "Achievement 38",
+        "description": "Shoot a projectile out of the air."
+    },
+    {
+        "name": "Achievement 39",
+        "description": "Eliminate a team of two by yourself."
+    },
+    {
+        "name": "Achievement 40",
+        "description": "Successfully escape a trapped building."
+    },
+    {
+        "name": "Achievement 41",
+        "description": "Find a rare item on the map."
+    },
+    {
+        "name": "Achievement 42",
+        "description": "Complete a match with zero deaths."
+    },
+    {
+        "name": "Achievement 43",
+        "description": "Get a kill by an environmental hazard."
+    },
+    {
+        "name": "Achievement 44",
+        "description": "Win 10 matches on the same map."
+    },
+    {
+        "name": "Achievement 45",
+        "description": "Perform a triple-kill."
+    },
+    {
+        "name": "Achievement 46",
+        "description": "Revive 10 teammates in total."
+    },
+    {
+        "name": "Achievement 47",
+        "description": "Get a kill with a knife from over 10 meters away."
+    },
+    {
+        "name": "Achievement 48",
+        "description": "Win a match after being down by a large margin."
+    },
+    {
+        "name": "Achievement 49",
+        "description": "Successfully counter an enemy ability."
+    },
+    {
+        "name": "Achievement 50",
+        "description": "Get a kill with an enemy's dropped weapon."
+    },
+    {
+        "name": "Achievement 51",
+        "description": "Finish a match in first place on your team."
+    },
+    {
+        "name": "Achievement 52",
+        "description": "Get a kill with a weapon from every class."
+    },
+    {
+        "name": "Achievement 53",
+        "description": "Get 10 headshots in a single round."
+    },
+    {
+        "name": "Achievement 54",
+        "description": "Destroy an enemy objective."
+    },
+    {
+        "name": "Achievement 55",
+        "description": "Complete a match as a support character."
+    },
+    {
+        "name": "Achievement 56",
+        "description": "Get a kill from a hidden sniper's nest."
+    },
+    {
+        "name": "Achievement 57",
+        "description": "Eliminate an enemy who is reloading."
+    },
+    {
+        "name": "Achievement 58",
+        "description": "Kill a total of 100 enemies."
+    },
+    {
+        "name": "Achievement 59",
+        "description": "Get 5 kills without reloading."
+    },
+    {
+        "name": "Achievement 60",
+        "description": "Successfully flank an entire enemy team."
+    },
+    {
+        "name": "Achievement 61",
+        "description": "Defuse a bomb with no time left."
+    },
+    {
+        "name": "Achievement 62",
+        "description": "Destroy 3 enemy devices."
+    },
+    {
+        "name": "Achievement 63",
+        "description": "Perform a flawless reload."
+    },
+    {
+        "name": "Achievement 64",
+        "description": "Complete a match without being spotted."
+    },
+    {
+        "name": "Achievement 65",
+        "description": "Jump from a high place and land safely."
+    },
+    {
+        "name": "Achievement 66",
+        "description": "Find a rare easter egg."
+    },
+    {
+        "name": "Achievement 67",
+        "description": "Win a round in less than 60 seconds."
+    },
+    {
+        "name": "Achievement 68",
+        "description": "Kill a player who is using a shield."
+    },
+    {
+        "name": "Achievement 69",
+        "description": "Get a kill by knocking an enemy off a ledge."
+    },
+    {
+        "name": "Achievement 70",
+        "description": "Deal over 500 damage in a single round."
+    },
+    {
+        "name": "Achievement 71",
+        "description": "Eliminate an enemy who is performing a finisher."
+    },
+    {
+        "name": "Achievement 72",
+        "description": "Get a double kill with one shot."
+    },
+    {
+        "name": "Achievement 73",
+        "description": "Successfully ambush an enemy squad."
+    },
+    {
+        "name": "Achievement 74",
+        "description": "Eliminate an enemy with a weapon you have less than 5 rounds for."
+    },
+    {
+        "name": "Achievement 75",
+        "description": "Go on a killing spree of 10 or more."
+    },
+    {
+        "name": "Achievement 76",
+        "description": "Get a kill with a weapon from every weapon slot."
+    },
+    {
+        "name": "Achievement 77",
+        "description": "Help your team win an objective."
+    },
+    {
+        "name": "Achievement 78",
+        "description": "Get a kill from behind an enemy."
+    },
+    {
+        "name": "Achievement 79",
+        "description": "Win a match after a teammate disconnects."
+    },
+    {
+        "name": "Achievement 80",
+        "description": "Successfully counter a smoke grenade."
+    },
+    {
+        "name": "Achievement 81",
+        "description": "Use a vehicle to get a triple kill."
+    },
+    {
+        "name": "Achievement 82",
+        "description": "Eliminate an enemy by a ricochet."
+    },
+    {
+        "name": "Achievement 83",
+        "description": "Win 25 matches."
+    },
+    {
+        "name": "Achievement 84",
+        "description": "Eliminate a player from the maximum effective range of your weapon."
+    },
+    {
+        "name": "Achievement 85",
+        "description": "Successfully use an enemy's gadget against them."
+    },
+    {
+        "name": "Achievement 86",
+        "description": "Destroy a drone in mid-air."
+    },
+    {
+        "name": "Achievement 87",
+        "description": "Win a round with only a melee weapon."
+    },
+    {
+        "name": "Achievement 88",
+        "description": "Get a kill by making a roof collapse on an enemy."
+    },
+    {
+        "name": "Achievement 89",
+        "description": "Get a kill while on low health."
+    },
+    {
+        "name": "Achievement 90",
+        "description": "Get a kill by running an enemy off a cliff."
+    },
+    {
+        "name": "Achievement 91",
+        "description": "Win a match with no one from your team dying."
+    },
+    {
+        "name": "Achievement 92",
+        "description": "Capture the point while a teammate is on it."
+    },
+    {
+        "name": "Achievement 93",
+        "description": "Get a triple headshot."
+    },
+    {
+        "name": "Achievement 94",
+        "description": "Get a kill with a weapon you have no ammo for."
+    },
+    {
+        "name": "Achievement 95",
+        "description": "Kill an enemy who is trying to heal."
+    },
+    {
+        "name": "Achievement 96",
+        "description": "Get 10 wins on different maps."
+    },
+    {
+        "name": "Achievement 97",
+        "description": "Deal over 1000 damage in a single round."
+    },
+    {
+        "name": "Achievement 98",
+        "description": "Get a quad kill."
+    },
+    {
+        "name": "Achievement 99",
+        "description": "Successfully lure an enemy into a trap."
+    },
+    {
+        "name": "Achievement 100",
+        "description": "Get a kill with a weapon from a distance of over 200 meters."
+    },
+    {
+        "name": "Achievement 101",
+        "description": "Eliminate an enemy who is using an ultimate ability."
+    },
+    {
+        "name": "Achievement 102",
+        "description": "Get a kill by shooting a gas tank."
+    },
+    {
+        "name": "Achievement 103",
+        "description": "Win 100 matches."
+    },
+    {
+        "name": "Achievement 104",
+        "description": "Get a kill from a moving vehicle."
+    },
+    {
+        "name": "Achievement 105",
+        "description": "Get 15 assists in a single round."
+    },
+    {
+        "name": "Achievement 106",
+        "description": "Get a kill after being revived."
+    },
+    {
+        "name": "Achievement 107",
+        "description": "Win a match with a single kill."
+    },
+    {
+        "name": "Achievement 108",
+        "description": "Get a kill while sliding."
+    },
+    {
+        "name": "Achievement 109",
+        "description": "Eliminate 5 enemies who are on a healing pad."
+    },
+    {
+        "name": "Achievement 110",
+        "description": "Eliminate a team of three by yourself."
+    },
+    {
+        "name": "Achievement 111",
+        "description": "Get a kill by shooting an enemy through a wall."
+    },
+    {
+        "name": "Achievement 112",
+        "description": "Capture the point while the enemy team is watching."
+    },
+    {
+        "name": "Achievement 113",
+        "description": "Get a kill with a weapon you picked up off the ground."
+    },
+    {
+        "name": "Achievement 114",
+        "description": "Destroy a total of 10 vehicles."
+    },
+    {
+        "name": "Achievement 115",
+        "description": "Get 25 headshots in a single game."
+    },
+    {
+        "name": "Achievement 116",
+        "description": "Win 5 matches in a row with the same team."
+    },
+    {
+        "name": "Achievement 117",
+        "description": "Win a match with only a melee weapon."
+    },
+    {
+        "name": "Achievement 118",
+        "description": "Get a kill by a team member's ultimate ability."
+    },
+    {
+        "name": "Achievement 119",
+        "description": "Destroy an enemy team's fortification."
+    },
+    {
+        "name": "Achievement 120",
+        "description": "Get a kill with a grenade from a high elevation."
+    },
+    {
+        "name": "Achievement 121",
+        "description": "Kill an enemy who is in the process of healing themselves."
+    },
+    {
+        "name": "Achievement 122",
+        "description": "Get a kill with a weapon you have not used before."
+    },
+    {
+        "name": "Achievement 123",
+        "description": "Win a round by killing the last enemy."
+    },
+    {
+        "name": "Achievement 124",
+        "description": "Revive a teammate in a place that's hard to reach."
+    },
+    {
+        "name": "Achievement 125",
+        "description": "Get 10 kills without reloading."
+    },
+    {
+        "name": "Achievement 126",
+        "description": "Successfully escape a trapped situation."
+    },
+    {
+        "name": "Achievement 127",
+        "description": "Find a hidden weapon in a secret area."
+    },
+    {
+        "name": "Achievement 128",
+        "description": "Complete a match without taking damage from a sniper."
+    },
+    {
+        "name": "Achievement 129",
+        "description": "Win a round by a large margin."
+    },
+    {
+        "name": "Achievement 130",
+        "description": "Get a kill by an environmental hazard like a falling rock."
+    },
+    {
+        "name": "Achievement 131",
+        "description": "Win 25 matches with a positive kill/death ratio."
+    },
+    {
+        "name": "Achievement 132",
+        "description": "Perform a flawless counter-attack."
+    },
+    {
+        "name": "Achievement 133",
+        "description": "Get a kill with an enemy's primary weapon."
+    },
+    {
+        "name": "Achievement 134",
+        "description": "Finish a match with the most kills on your team."
+    },
+    {
+        "name": "Achievement 135",
+        "description": "Get a kill with a weapon from a different class than your main one."
+    },
+    {
+        "name": "Achievement 136",
+        "description": "Get a triple kill with a shotgun."
+    },
+    {
+        "name": "Achievement 137",
+        "description": "Destroy an enemy's tactical device."
+    },
+    {
+        "name": "Achievement 138",
+        "description": "Complete a match as an attack character."
+    },
+    {
+        "name": "Achievement 139",
+        "description": "Get a kill from a hidden spot."
+    },
+    {
+        "name": "Achievement 140",
+        "description": "Eliminate an enemy who is using a special weapon."
+    },
+    {
+        "name": "Achievement 141",
+        "description": "Kill a total of 250 enemies."
+    },
+    {
+        "name": "Achievement 142",
+        "description": "Get a killing spree of 20 or more."
+    },
+    {
+        "name": "Achievement 143",
+        "description": "Successfully flank an entire enemy team by yourself."
+    },
+    {
+        "name": "Achievement 144",
+        "description": "Defuse a bomb with no one knowing."
+    },
+    {
+        "name": "Achievement 145",
+        "description": "Destroy 5 enemy gadgets in a single round."
+    },
+    {
+        "name": "Achievement 146",
+        "description": "Perform a flawless execution on a group of enemies."
+    },
+    {
+        "name": "Achievement 147",
+        "description": "Complete a match without being seen."
+    },
+    {
+        "name": "Achievement 148",
+        "description": "Jump from a high place and land perfectly."
+    },
+    {
+        "name": "Achievement 149",
+        "description": "Find a rare easter egg that's hard to find."
+    },
+    {
+        "name": "Achievement 150",
+        "description": "Win a round in less than 30 seconds."
+    },
+    {
+        "name": "Achievement 151",
+        "description": "Kill a player who is using a high-end weapon."
+    },
+    {
+        "name": "Achievement 152",
+        "description": "Get a kill by pushing an enemy off a ledge."
+    },
+    {
+        "name": "Achievement 153",
+        "description": "Deal over 2000 damage in a single round."
+    },
+    {
+        "name": "Achievement 154",
+        "description": "Eliminate an enemy who is performing a long finisher."
+    },
+    {
+        "name": "Achievement 155",
+        "description": "Get a triple kill with a single shot."
+    },
+    {
+        "name": "Achievement 156",
+        "description": "Successfully ambush an entire enemy squad."
+    },
+    {
+        "name": "Achievement 157",
+        "description": "Eliminate an enemy with a weapon you have no bullets for."
+    },
+    {
+        "name": "Achievement 158",
+        "description": "Go on a killing spree of 50 or more."
+    },
+    {
+        "name": "Achievement 159",
+        "description": "Get a kill with a weapon from every slot in a single life."
+    },
+    {
+        "name": "Achievement 160",
+        "description": "Help your team win all objectives in a single game."
+    },
+    {
+        "name": "Achievement 161",
+        "description": "Get a kill from behind an enemy who is facing you."
+    },
+    {
+        "name": "Achievement 162",
+        "description": "Win a match after being down by a large amount."
+    },
+    {
+        "name": "Achievement 163",
+        "description": "Successfully counter a smoke grenade with a different type of grenade."
+    },
+    {
+        "name": "Achievement 164",
+        "description": "Use a vehicle to get a quad kill."
+    },
+    {
+        "name": "Achievement 165",
+        "description": "Eliminate an enemy by a ricochet from a different wall."
+    },
+    {
+        "name": "Achievement 166",
+        "description": "Win 50 matches."
+    },
+    {
+        "name": "Achievement 167",
+        "description": "Eliminate a player from the maximum range of your weapon while they are running."
+    },
+    {
+        "name": "Achievement 168",
+        "description": "Successfully use an enemy's ultimate ability against them."
+    },
+    {
+        "name": "Achievement 169",
+        "description": "Destroy an enemy team's drone in mid-air."
+    },
+    {
+        "name": "Achievement 170",
+        "description": "Win a match with only a melee weapon and no one from your team dying."
+    },
+    {
+        "name": "Achievement 171",
+        "description": "Get a kill by making a building collapse on an enemy."
+    },
+    {
+        "name": "Achievement 172",
+        "description": "Get a kill while on very low health."
+    },
+    {
+        "name": "Achievement 173",
+        "description": "Get a kill by running an enemy off a high cliff."
+    },
+    {
+        "name": "Achievement 174",
+        "description": "Win a match with no one from your team dying and with a large score."
+    },
+    {
+        "name": "Achievement 175",
+        "description": "Capture the point while the enemy team is on it."
+    },
+    {
+        "name": "Achievement 176",
+        "description": "Get a quad headshot."
+    },
+    {
+        "name": "Achievement 177",
+        "description": "Get a kill with a weapon you have no ammo for and no time to reload."
+    },
+    {
+        "name": "Achievement 178",
+        "description": "Kill an enemy who is trying to revive a teammate."
+    },
+    {
+        "name": "Achievement 179",
+        "description": "Get 25 wins on different maps."
+    },
+    {
+        "name": "Achievement 180",
+        "description": "Deal over 5000 damage in a single round."
+    },
+    {
+        "name": "Achievement 181",
+        "description": "Get a quintuple kill."
+    },
+    {
+        "name": "Achievement 182",
+        "description": "Successfully lure an enemy into a trap and kill them."
+    },
+    {
+        "name": "Achievement 183",
+        "description": "Get a kill with a weapon from a distance of over 500 meters."
+    },
+    {
+        "name": "Achievement 184",
+        "description": "Eliminate an enemy who is in the process of using an ultimate ability."
+    },
+    {
+        "name": "Achievement 185",
+        "description": "Get a kill by shooting an enemy's grenade."
+    },
+    {
+        "name": "Achievement 186",
+        "description": "Win 250 matches."
+    },
+    {
+        "name": "Achievement 187",
+        "description": "Get a kill from a moving vehicle with a sniper rifle."
+    },
+    {
+        "name": "Achievement 188",
+        "description": "Get 25 assists in a single round."
+    },
+    {
+        "name": "Achievement 189",
+        "description": "Get a kill after being revived and then reviving a teammate."
+    },
+    {
+        "name": "Achievement 190",
+        "description": "Win a match with a single kill and no deaths."
+    },
+    {
+        "name": "Achievement 191",
+        "description": "Get a kill while sliding and aiming down sights."
+    },
+    {
+        "name": "Achievement 192",
+        "description": "Eliminate 10 enemies who are on a healing pad."
+    },
+    {
+        "name": "Achievement 193",
+        "description": "Eliminate a team of four by yourself."
+    },
+    {
+        "name": "Achievement 194",
+        "description": "Get a kill by shooting an enemy through a thick wall."
+    },
+    {
+        "name": "Achievement 195",
+        "description": "Capture the point while the entire enemy team is on it."
+    },
+    {
+        "name": "Achievement 196",
+        "description": "Get a kill with a weapon you picked up off the ground and no ammo for."
+    },
+    {
+        "name": "Achievement 197",
+        "description": "Destroy a total of 25 vehicles."
+    },
+    {
+        "name": "Achievement 198",
+        "description": "Get 50 headshots in a single game."
+    },
+    {
+        "name": "Achievement 199",
+        "description": "Win 10 matches in a row with the same team and a flawless record."
+    },
+    {
+        "name": "Achievement 200",
+        "description": "Win a match with only a melee weapon and a perfect record."
+    },
+    {
+        "name": "Achievement 201",
+        "description": "Get a kill by a team member's ultimate ability and get a kill yourself."
+    },
+    {
+        "name": "Achievement 202",
+        "description": "Destroy an entire enemy team's fortifications."
+    },
+    {
+        "name": "Achievement 203",
+        "description": "Get a kill with a grenade from a very high elevation."
+    },
+    {
+        "name": "Achievement 204",
+        "description": "Kill an enemy who is in the process of healing themselves and their teammates."
+    },
+    {
+        "name": "Achievement 205",
+        "description": "Get a kill with a weapon you have not used before and with no ammo."
+    },
+    {
+        "name": "Achievement 206",
+        "description": "Win a round by killing the last enemy and a teammate."
+    },
+    {
+        "name": "Achievement 207",
+        "description": "Revive a teammate in a very hard to reach place."
+    },
+    {
+        "name": "Achievement 208",
+        "description": "Get 25 kills without reloading."
+    },
+    {
+        "name": "Achievement 209",
+        "description": "Successfully escape a trapped situation with no health left."
+    },
+    {
+        "name": "Achievement 210",
+        "description": "Find a hidden weapon in a very secret area."
+    },
+    {
+        "name": "Achievement 211",
+        "description": "Complete a match without taking any damage from a sniper and with a perfect record."
+    },
+    {
+        "name": "Achievement 212",
+        "description": "Win a round by a very large margin."
+    },
+    {
+        "name": "Achievement 213",
+        "description": "Get a kill by a series of environmental hazards."
+    },
+    {
+        "name": "Achievement 214",
+        "description": "Win 50 matches with a positive kill/death ratio and a perfect record."
+    },
+    {
+        "name": "Achievement 215",
+        "description": "Perform a flawless counter-attack with no one on your team dying."
+    },
+    {
+        "name": "Achievement 216",
+        "description": "Get a kill with an enemy's primary weapon while they are reloading."
+    },
+    {
+        "name": "Achievement 217",
+        "description": "Finish a match with the most kills on your team and a perfect record."
+    },
+    {
+        "name": "Achievement 218",
+        "description": "Get a kill with a weapon from a different class than your main one and with no ammo."
+    },
+    {
+        "name": "Achievement 219",
+        "description": "Get a triple kill with a shotgun and a perfect record."
+    },
+    {
+        "name": "Achievement 220",
+        "description": "Destroy an enemy's tactical device while they are using it."
+    },
+    {
+        "name": "Achievement 221",
+        "description": "Complete a match as an attack character with a perfect record."
+    },
+    {
+        "name": "Achievement 222",
+        "description": "Get a kill from a hidden spot and with a perfect record."
+    },
+    {
+        "name": "Achievement 223",
+        "description": "Eliminate an enemy who is using a special weapon and with a perfect record."
+    },
+    {
+        "name": "Achievement 224",
+        "description": "Kill a total of 500 enemies."
+    },
+    {
+        "name": "Achievement 225",
+        "description": "Get a killing spree of 100 or more."
+    },
+    {
+        "name": "Achievement 226",
+        "description": "Successfully flank an entire enemy team by yourself and with a perfect record."
+    },
+    {
+        "name": "Achievement 227",
+        "description": "Defuse a bomb with no one knowing and with a perfect record."
+    },
+    {
+        "name": "Achievement 228",
+        "description": "Destroy 10 enemy gadgets in a single round."
+    },
+    {
+        "name": "Achievement 229",
+        "description": "Perform a flawless execution on a group of enemies and with a perfect record."
+    },
+    {
+        "name": "Achievement 230",
+        "description": "Complete a match without being seen and with a perfect record."
+    },
+    {
+        "name": "Achievement 231",
+        "description": "Jump from a high place and land perfectly without taking any damage."
+    },
+    {
+        "name": "Achievement 232",
+        "description": "Find a very rare easter egg."
+    },
+    {
+        "name": "Achievement 233",
+        "description": "Win a round in less than 15 seconds."
+    },
+    {
+        "name": "Achievement 234",
+        "description": "Kill a player who is using a high-end weapon and with a perfect record."
+    },
+    {
+        "name": "Achievement 235",
+        "description": "Get a kill by pushing an enemy off a ledge and with a perfect record."
+    },
+    {
+        "name": "Achievement 236",
+        "description": "Deal over 10,000 damage in a single round."
+    },
+    {
+        "name": "Achievement 237",
+        "description": "Eliminate an enemy who is performing a long finisher and with a perfect record."
+    },
+    {
+        "name": "Achievement 238",
+        "description": "Get a triple kill with a single shot and with a perfect record."
+    },
+    {
+        "name": "Achievement 239",
+        "description": "Successfully ambush an entire enemy squad and with a perfect record."
+    },
+    {
+        "name": "Achievement 240",
+        "description": "Eliminate an enemy with a weapon you have no bullets for and a perfect record."
+    },
+    {
+        "name": "Achievement 241",
+        "description": "Go on a killing spree of 100 or more with a perfect record."
+    },
+    {
+        "name": "Achievement 242",
+        "description": "Get a kill with a weapon from every slot in a single life and with a perfect record."
+    },
+    {
+        "name": "Achievement 243",
+        "description": "Help your team win all objectives in a single game and with a perfect record."
+    },
+    {
+        "name": "Achievement 244",
+        "description": "Get a kill from behind an enemy who is facing you and with a perfect record."
+    },
+    {
+        "name": "Achievement 245",
+        "description": "Win a match after being down by a very large amount."
+    },
+    {
+        "name": "Achievement 246",
+        "description": "Successfully counter a smoke grenade with a different type of grenade and with a perfect record."
+    },
+    {
+        "name": "Achievement 247",
+        "description": "Use a vehicle to get a quad kill and with a perfect record."
+    },
+    {
+        "name": "Achievement 248",
+        "description": "Eliminate an enemy by a ricochet from a different wall and with a perfect record."
+    },
+    {
+        "name": "Achievement 249",
+        "description": "Win 1000 matches."
+    },
+    {
+        "name": "Achievement 250",
+        "description": "Eliminate a player from the maximum range of your weapon while they are running and with a perfect record."
+    },
+    {
+        "name": "Achievement 251",
+        "description": "Successfully use an enemy's ultimate ability against them and with a perfect record."
+    },
+    {
+        "name": "Achievement 252",
+        "description": "Destroy an enemy team's drone in mid-air and with a perfect record."
+    },
+    {
+        "name": "Achievement 253",
+        "description": "Win a match with only a melee weapon and a perfect record."
+    },
+    {
+        "name": "Achievement 254",
+        "description": "Get a kill by making a building collapse on an enemy and with a perfect record."
+    },
+    {
+        "name": "Achievement 255",
+        "description": "Get a kill while on very low health and with a perfect record."
+    },
+    {
+        "name": "Achievement 256",
+        "description": "Get a kill by running an enemy off a very high cliff."
+    }
 ]
