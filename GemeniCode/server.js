@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const fs = require('fs');
 const { Server } = require("socket.io");
 
 const app = express();
@@ -9,33 +10,46 @@ const io = new Server(server);
 
 const LOBBIES = {};
 
-const BASE_ACHIEVEMENTS = [
-    { name: "First Blood", description: "Secure the first elimination of the game." },
-    { name: "Pacifist", description: "Win a round without eliminating any opponents." },
-    { name: "The Collector", description: "Collect 5 different power-ups in one round." },
-    { name: "Sniper", description: "Eliminate an opponent from more than 100 meters away." },
-    { name: "Unstoppable", description: "Eliminate 3 opponents in a row without taking damage." },
-    { name: "Team Player", description: "Revive a teammate." },
-    { name: "Solo Victory", description: "Win a round as the last person standing on your team." },
-    { name: "Architect", description: "Build a structure with at least 50 pieces." },
-    { name: "The Hoarder", description: "Have a full inventory of all item slots." },
-    { name: "Marksman", description: "Land 10 headshots in a single round." },
-    { name: "Medic", description: "Heal a total of 500 health to your teammates." },
-    { name: "Explorer", description: "Discover a new area on the map." },
-    { name: "Stealthy", description: "Eliminate an opponent with a melee attack." },
-    { name: "Treasure Hunter", description: "Open 5 supply drops in a single game." },
-    { name: "Lucky Shot", description: "Eliminate an opponent with a grenade or other explosive." },
-    { name: "Hot Drop", description: "Eliminate an opponent within 30 seconds of landing." },
-    { name: "The Bait", description: "Lure an enemy into a trap set by your teammate." },
-    { name: "Close Call", description: "Win a fight with less than 10 health remaining." },
-    { name: "Full Squad", description: "Eliminate an entire enemy squad by yourself." },
-    { name: "The Flash", description: "Run for 1,000 meters in under a minute." },
-    { name: "King of the Hill", description: "Be the last person alive in the final zone." },
-    { name: "The Juggernaut", description: "Absorb more than 1,000 damage in a single round." },
-    { name: "Supply Run", description: "Open 10 loot containers in a single game." },
-    { name: "Master Builder", description: "Build a defensive wall while under heavy fire." },
-    { name: "Grounded", description: "Eliminate a flying opponent." }
+// Default achievements if achievements.json is not found or is invalid
+let ACHIEVEMENTS = [
+    {
+        "name": "First Steps",
+        "description": "Complete your first objective."
+    },
+    {
+        "name": "Social Butterfly",
+        "description": "Join a public lobby with at least 5 other people."
+    },
+    {
+        "name": "Lone Wolf",
+        "description": "Create and complete an objective in a private room."
+    },
+    {
+        "name": "Completionist",
+        "description": "Complete 10 objectives in a single game."
+    },
+    {
+        "name": "Speed Demon",
+        "description": "Complete a single objective in under 10 seconds."
+    }
 ];
+
+// Attempt to read achievements from achievements.json
+const achievementsFilePath = path.join(__dirname, 'achievements.json');
+try {
+    const fileContent = fs.readFileSync(achievementsFilePath, 'utf8');
+    const loadedAchievements = JSON.parse(fileContent);
+    if (Array.isArray(loadedAchievements) && loadedAchievements.length > 0) {
+        ACHIEVEMENTS = loadedAchievements;
+        console.log(`Successfully loaded ${ACHIEVEMENTS.length} achievements from achievements.json.`);
+    } else {
+        console.warn('achievements.json is empty or not a valid array. Using default achievements.');
+    }
+} catch (error) {
+    console.error('Error reading achievements.json. Using default achievements.');
+    console.error(error);
+}
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -47,25 +61,36 @@ app.get('/', (req, res) => {
 
 // Endpoint to create a new lobby
 app.post('/api/create-lobby', (req, res) => {
+    const boardSize = parseInt(req.body.boardSize, 10);
+    if (isNaN(boardSize) || boardSize < 3 || boardSize > 7) {
+        return res.status(400).json({ error: 'Invalid board size. Must be between 3 and 7.' });
+    }
+
     const roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
     const adminCode = Math.random().toString(36).substring(2, 8);
+    const requiredAchievements = boardSize * boardSize;
+
+    if (ACHIEVEMENTS.length < requiredAchievements) {
+        return res.status(500).json({ error: `Not enough achievements to create a ${boardSize}x${boardSize} board. Please try a smaller size.` });
+    }
 
     // Create a randomized bingo board
-    const bingoBoard = [...BASE_ACHIEVEMENTS]
+    const bingoBoard = [...ACHIEVEMENTS]
         .sort(() => 0.5 - Math.random())
-        .slice(0, 25);
+        .slice(0, requiredAchievements);
 
     LOBBIES[roomCode] = {
         adminCode,
+        boardSize,
         bingoBoard,
         participants: [],
         pendingParticipants: [],
-        pendingRequests: [], // New array for ordered, individual requests
+        pendingRequests: [],
         chat: []
     };
 
-    console.log(`Lobby created: ${roomCode} with admin code: ${adminCode}`);
-    res.json({ roomCode, adminCode });
+    console.log(`Lobby created: ${roomCode} with admin code: ${adminCode} and board size ${boardSize}x${boardSize}`);
+    res.json({ roomCode, adminCode, boardSize });
 });
 
 // Endpoint for participants to join a lobby
@@ -87,7 +112,7 @@ app.post('/api/join-lobby', (req, res) => {
             return res.status(401).json({ error: 'Invalid admin code.' });
         }
         console.log(`Admin joined lobby ${roomCode}`);
-        return res.json({ success: true, lobbyData: lobby });
+        return res.json({ success: true, lobbyData: lobby, boardSize: lobby.boardSize });
     }
 
     res.status(400).json({ error: 'Invalid role or request.' });

@@ -1,122 +1,1026 @@
 [
   {
-    "name": "First Steps",
-    "description": "Complete your first objective."
+    "name": "Newbie",
+    "description": "Start the game for the first time."
   },
   {
-    "name": "Social Butterfly",
-    "description": "Join a public lobby with at least 5 other people."
+    "name": "First Step",
+    "description": "Complete the tutorial."
   },
   {
-    "name": "Lone Wolf",
-    "description": "Create and complete an objective in a private room."
-  },
-  {
-    "name": "Completionist",
-    "description": "Complete 10 objectives in a single game."
-  },
-  {
-    "name": "Speed Demon",
-    "description": "Complete a single objective in under 10 seconds."
-  },
-  {
-    "name": "Strategist",
-    "description": "Complete two adjacent objectives to start a line."
-  },
-  {
-    "name": "The Architect",
-    "description": "Be the first to create a diagonal line on the board."
-  },
-  {
-    "name": "Full House",
-    "description": "Complete a full row and column in the same game."
-  },
-  {
-    "name": "Master of Disguise",
-    "description": "Change your username at least three times."
-  },
-  {
-    "name": "Bingo Master",
-    "description": "Be the first player to achieve a Bingo in your lobby."
+    "name": "Explorer",
+    "description": "Discover 10 different areas."
   },
   {
     "name": "Globetrotter",
-    "description": "Join a lobby with players from three different countries."
+    "description": "Discover all areas."
   },
   {
-    "name": "Late to the Party",
-    "description": "Join a lobby after the game has already started."
+    "name": "Hoarder",
+    "description": "Collect 100 items."
   },
   {
-    "name": "Quick Thinker",
-    "description": "Complete a Bingo in under one minute."
+    "name": "Collector",
+    "description": "Collect all unique items."
   },
   {
-    "name": "Double Vision",
-    "description": "Achieve two Bingos in a single game."
+    "name": "First Blood",
+    "description": "Defeat your first enemy."
   },
   {
-    "name": "The Champion",
-    "description": "Win five games in a row as a participant."
+    "name": "Slayer",
+    "description": "Defeat 100 enemies."
   },
   {
-    "name": "The Host with the Most",
-    "description": "Host a lobby with ten or more participants."
+    "name": "Champion",
+    "description": "Defeat 1,000 enemies."
   },
   {
-    "name": "Weekend Warrior",
-    "description": "Play a game between Friday and Sunday."
+    "name": "Boss Hunter",
+    "description": "Defeat your first boss."
   },
   {
-    "name": "The Early Bird",
-    "description": "Be the first participant to join a newly created lobby."
+    "name": "King Slayer",
+    "description": "Defeat all bosses."
   },
   {
-    "name": "Socializer",
-    "description": "Use the chat feature to send at least ten messages."
+    "name": "Novice Crafter",
+    "description": "Craft 5 items."
   },
   {
-    "name": "The Observer",
-    "description": "Join a game as a participant but do not complete any objectives."
+    "name": "Artisan",
+    "description": "Craft 50 items."
   },
   {
-    "name": "Hidden Gem",
-    "description": "Find and complete a secret objective not on the board."
+    "name": "Grandmaster Crafter",
+    "description": "Craft 500 items."
   },
   {
-    "name": "The Collector",
-    "description": "Complete one of every type of objective on the board."
+    "name": "Adept",
+    "description": "Reach level 10."
   },
   {
-    "name": "Night Owl",
-    "description": "Play a game between 12 AM and 5 AM."
+    "name": "Master",
+    "description": "Reach level 50."
   },
   {
-    "name": "The Strategist",
-    "description": "Achieve Bingo with the middle square as the final completed objective."
+    "name": "Legend",
+    "description": "Reach the maximum level."
   },
   {
-    "name": "The Navigator",
-    "description": "Complete a path of five objectives, moving horizontally and vertically."
+    "name": "Wealthy",
+    "description": "Earn 1,000 gold."
   },
   {
-    "name": "The Survivor",
-    "description": "Be the last player remaining in a game after everyone else has left."
+    "name": "Tycoon",
+    "description": "Earn 10,000 gold."
   },
   {
-    "name": "The Ghost",
-    "description": "Win a game without your name appearing in the top player list."
+    "name": "Millionaire",
+    "description": "Earn 1,000,000 gold."
   },
   {
-    "name": "The Joker",
-    "description": "Complete an objective using a wild card."
+    "name": "Social Butterfly",
+    "description": "Add 5 friends."
+  },
+  {
+    "name": "Networker",
+    "description": "Add 20 friends."
+  },
+  {
+    "name": "Team Player",
+    "description": "Complete a quest with a friend."
+  },
+  {
+    "name": "Hero of the People",
+    "description": "Complete 50 quests."
+  },
+  {
+    "name": "Quest Master",
+    "description": "Complete all main quests."
+  },
+  {
+    "name": "The Seeker",
+    "description": "Complete all side quests."
+  },
+  {
+    "name": "First Catch",
+    "description": "Catch your first fish."
+  },
+  {
+    "name": "Fisherman",
+    "description": "Catch 100 fish."
+  },
+  {
+    "name": "Ocean King",
+    "description": "Catch a legendary fish."
+  },
+  {
+    "name": "Farmer",
+    "description": "Harvest 100 crops."
+  },
+  {
+    "name": "Green Thumb",
+    "description": "Harvest all crop types."
+  },
+  {
+    "name": "Architect",
+    "description": "Build 5 structures."
+  },
+  {
+    "name": "City Planner",
+    "description": "Build 50 structures."
+  },
+  {
+    "name": "First Gem",
+    "description": "Mine 10 ores."
+  },
+  {
+    "name": "Miner",
+    "description": "Mine 100 ores."
+  },
+  {
+    "name": "Geologist",
+    "description": "Mine 1,000 ores."
+  },
+  {
+    "name": "First Spell",
+    "description": "Cast a spell for the first time."
+  },
+  {
+    "name": "Sorcerer",
+    "description": "Cast 100 spells."
+  },
+  {
+    "name": "Arcane Master",
+    "description": "Learn all spells."
+  },
+  {
+    "name": "Potion Maker",
+    "description": "Brew 10 potions."
+  },
+  {
+    "name": "Alchemist",
+    "description": "Brew all potion types."
+  },
+  {
+    "name": "Dead Shot",
+    "description": "Get a headshot."
+  },
+  {
+    "name": "Sharpshooter",
+    "description": "Get 100 headshots."
+  },
+  {
+    "name": "Ranger",
+    "description": "Get 1,000 headshots."
+  },
+  {
+    "name": "The Unstoppable",
+    "description": "Get a 10-kill streak."
+  },
+  {
+    "name": "Immortal",
+    "description": "Get a 25-kill streak."
+  },
+  {
+    "name": "Overachiever",
+    "description": "Complete 100 achievements."
+  },
+  {
+    "name": "Completionist",
+    "description": "Complete all achievements."
+  },
+  {
+    "name": "Secret Keeper",
+    "description": "Find a hidden secret."
+  },
+  {
+    "name": "Ghost",
+    "description": "Complete a mission without being detected."
+  },
+  {
+    "name": "Speed Demon",
+    "description": "Complete a mission in under 5 minutes."
+  },
+  {
+    "name": "The Negotiator",
+    "description": "Succeed in 5 dialogue options."
+  },
+  {
+    "name": "Charmer",
+    "description": "Succeed in 50 dialogue options."
+  },
+  {
+    "name": "The Diplomat",
+    "description": "Succeed in 100 dialogue options."
+  },
+  {
+    "name": "Mountaineer",
+    "description": "Reach the highest point in the game."
+  },
+  {
+    "name": "Deep Diver",
+    "description": "Reach the lowest point in the game."
+  },
+  {
+    "name": "First Aid",
+    "description": "Heal a teammate."
+  },
+  {
+    "name": "The Healer",
+    "description": "Heal a teammate 100 times."
+  },
+  {
+    "name": "Savior",
+    "description": "Revive a teammate."
+  },
+  {
+    "name": "Phoenix",
+    "description": "Revive a teammate 50 times."
+  },
+  {
+    "name": "Puzzler",
+    "description": "Solve 10 puzzles."
+  },
+  {
+    "name": "Enigma",
+    "description": "Solve all puzzles."
+  },
+  {
+    "name": "One Hit Wonder",
+    "description": "Defeat an enemy with a single attack."
+  },
+  {
+    "name": "Executioner",
+    "description": "Perform 100 finishing moves."
+  },
+  {
+    "name": "The Crusher",
+    "description": "Deal 10,000 damage in a single hit."
+  },
+  {
+    "name": "The Tank",
+    "description": "Take 10,000 damage without dying."
+  },
+  {
+    "name": "Evasion Master",
+    "description": "Dodge 100 attacks."
+  },
+  {
+    "name": "Perfect Block",
+    "description": "Block 100 attacks perfectly."
+  },
+  {
+    "name": "The Courier",
+    "description": "Deliver 10 packages."
+  },
+  {
+    "name": "Logistician",
+    "description": "Deliver 50 packages."
+  },
+  {
+    "name": "Pathfinder",
+    "description": "Discover 5 hidden paths."
+  },
+  {
+    "name": "Trailblazer",
+    "description": "Discover all hidden paths."
+  },
+  {
+    "name": "Archaeologist",
+    "description": "Find 5 hidden treasures."
+  },
+  {
+    "name": "Treasure Hunter",
+    "description": "Find all hidden treasures."
+  },
+  {
+    "name": "Librarian",
+    "description": "Read 10 books or scrolls."
+  },
+  {
+    "name": "Scholar",
+    "description": "Read all books or scrolls."
+  },
+  {
+    "name": "First Ride",
+    "description": "Mount a mount for the first time."
+  },
+  {
+    "name": "Rider",
+    "description": "Ride a mount for 1 hour."
+  },
+  {
+    "name": "Stable Master",
+    "description": "Collect all mount types."
+  },
+  {
+    "name": "The Gourmet",
+    "description": "Cook 10 different recipes."
+  },
+  {
+    "name": "Master Chef",
+    "description": "Cook all recipes."
+  },
+  {
+    "name": "Master of Disguise",
+    "description": "Wear 5 different outfits."
+  },
+  {
+    "name": "Fashionista",
+    "description": "Collect all outfit types."
+  },
+  {
+    "name": "The Gambler",
+    "description": "Win 5 games of chance."
+  },
+  {
+    "name": "High Roller",
+    "description": "Win 50 games of chance."
+  },
+  {
+    "name": "Strategist",
+    "description": "Win 10 multiplayer matches."
+  },
+  {
+    "name": "Conqueror",
+    "description": "Win 50 multiplayer matches."
+  },
+  {
+    "name": "The King",
+    "description": "Win 100 multiplayer matches."
+  },
+  {
+    "name": "Photographer",
+    "description": "Take 10 photos in-game."
+  },
+  {
+    "name": "Documentarian",
+    "description": "Take 100 photos in-game."
+  },
+  {
+    "name": "The Architect",
+    "description": "Build a structure with 100 pieces."
+  },
+  {
+    "name": "The Sculptor",
+    "description": "Build a structure with 500 pieces."
+  },
+  {
+    "name": "Destroyer",
+    "description": "Destroy 100 objects."
+  },
+  {
+    "name": "Wrecker",
+    "description": "Destroy 1,000 objects."
+  },
+  {
+    "name": "Acrobat",
+    "description": "Perform 100 jumps."
+  },
+  {
+    "name": "Daredevil",
+    "description": "Perform a risky jump successfully."
+  },
+  {
+    "name": "The Wanderer",
+    "description": "Travel 100 kilometers."
+  },
+  {
+    "name": "The Traveler",
+    "description": "Travel 1,000 kilometers."
+  },
+  {
+    "name": "Cartographer",
+    "description": "Explore 50% of the world map."
+  },
+  {
+    "name": "Map Maker",
+    "description": "Explore 100% of the world map."
+  },
+  {
+    "name": "The Messenger",
+    "description": "Send 10 in-game messages."
+  },
+  {
+    "name": "The Communicator",
+    "description": "Send 100 in-game messages."
+  },
+  {
+    "name": "The Entertainer",
+    "description": "Use 5 emotes."
+  },
+  {
+    "name": "The Showman",
+    "description": "Use all emotes."
+  },
+  {
+    "name": "Backstabber",
+    "description": "Defeat an enemy with a stealth attack."
+  },
+  {
+    "name": "Silent Killer",
+    "description": "Defeat 100 enemies with stealth attacks."
+  },
+  {
+    "name": "The Marksman",
+    "description": "Hit a target from 100 meters away."
+  },
+  {
+    "name": "The Sniper",
+    "description": "Hit a target from 500 meters away."
+  },
+  {
+    "name": "First Upgrade",
+    "description": "Upgrade a weapon or armor."
+  },
+  {
+    "name": "The Smith",
+    "description": "Upgrade a weapon or armor 10 times."
+  },
+  {
+    "name": "Master of Arms",
+    "description": "Fully upgrade a legendary weapon."
+  },
+  {
+    "name": "The Angler",
+    "description": "Catch 10 unique types of fish."
+  },
+  {
+    "name": "The Botanist",
+    "description": "Harvest 10 unique types of plants."
+  },
+  {
+    "name": "The Hunter",
+    "description": "Hunt 10 unique types of animals."
+  },
+  {
+    "name": "The Zoologist",
+    "description": "Hunt all unique types of animals."
+  },
+  {
+    "name": "The Chef",
+    "description": "Cook 10 different meals."
+  },
+  {
+    "name": "The Baker",
+    "description": "Bake 10 different goods."
+  },
+  {
+    "name": "The Brewer",
+    "description": "Brew 10 different beverages."
+  },
+  {
+    "name": "The Winemaker",
+    "description": "Make 10 different types of wine."
+  },
+  {
+    "name": "The Forager",
+    "description": "Find 10 different types of mushrooms."
+  },
+  {
+    "name": "The Mycologist",
+    "description": "Find all unique types of mushrooms."
+  },
+  {
+    "name": "The Gardener",
+    "description": "Grow 10 different types of flowers."
+  },
+  {
+    "name": "The Florist",
+    "description": "Grow all unique types of flowers."
+  },
+  {
+    "name": "The Farmer",
+    "description": "Grow 10 different types of vegetables."
+  },
+  {
+    "name": "The Botanist",
+    "description": "Grow all unique types of vegetables."
+  },
+  {
+    "name": "The Rancher",
+    "description": "Raise 10 different types of animals."
+  },
+  {
+    "name": "The Herdsman",
+    "description": "Raise all unique types of animals."
+  },
+  {
+    "name": "The Zoologist",
+    "description": "Breed 10 different types of animals."
+  },
+  {
+    "name": "The Animal Whisperer",
+    "description": "Breed all unique types of animals."
+  },
+  {
+    "name": "The Builder",
+    "description": "Build 10 different types of buildings."
+  },
+  {
+    "name": "The Architect",
+    "description": "Build all unique types of buildings."
+  },
+  {
+    "name": "The Decorator",
+    "description": "Decorate a house with 10 different items."
+  },
+  {
+    "name": "The Interior Designer",
+    "description": "Decorate a house with 100 different items."
+  },
+  {
+    "name": "The Landscaper",
+    "description": "Create a garden with 10 different plants."
+  },
+  {
+    "name": "The Horticulturalist",
+    "description": "Create a garden with 50 different plants."
+  },
+  {
+    "name": "The Gardener",
+    "description": "Grow 10 different types of fruit."
+  },
+  {
+    "name": "The Pomologist",
+    "description": "Grow all unique types of fruit."
+  },
+  {
+    "name": "The Lumberjack",
+    "description": "Cut down 100 trees."
+  },
+  {
+    "name": "The Forester",
+    "description": "Cut down 1,000 trees."
+  },
+  {
+    "name": "The Woodsman",
+    "description": "Cut down all unique types of trees."
+  },
+  {
+    "name": "The Mason",
+    "description": "Mine 100 stone blocks."
+  },
+  {
+    "name": "The Quarryman",
+    "description": "Mine 1,000 stone blocks."
+  },
+  {
+    "name": "The Prospector",
+    "description": "Mine all unique types of ore."
+  },
+  {
+    "name": "The Scavenger",
+    "description": "Find 10 unique items in the trash."
+  },
+  {
+    "name": "The Ragpicker",
+    "description": "Find 50 unique items in the trash."
+  },
+  {
+    "name": "The Historian",
+    "description": "Find 10 artifacts."
+  },
+  {
+    "name": "The Antiquarian",
+    "description": "Find 50 artifacts."
+  },
+  {
+    "name": "The Scholar",
+    "description": "Discover all lore entries."
+  },
+  {
+    "name": "The Lore Master",
+    "description": "Read all lore entries."
+  },
+  {
+    "name": "The Musician",
+    "description": "Play a musical instrument."
+  },
+  {
+    "name": "The Virtuoso",
+    "description": "Play a song perfectly."
+  },
+  {
+    "name": "The Dancer",
+    "description": "Perform a dance."
+  },
+  {
+    "name": "The Choreographer",
+    "description": "Perform a dance perfectly."
+  },
+  {
+    "name": "The Artist",
+    "description": "Paint a picture."
+  },
+  {
+    "name": "The Painter",
+    "description": "Paint 10 pictures."
+  },
+  {
+    "name": "The Calligrapher",
+    "description": "Write a message."
   },
   {
     "name": "The Scribe",
-    "description": "Fill out a bingo board and save it to your profile."
+    "description": "Write 100 messages."
+  },
+  {
+    "name": "The Poet",
+    "description": "Write a poem."
+  },
+  {
+    "name": "The Bard",
+    "description": "Write 10 poems."
+  },
+  {
+    "name": "The Storyteller",
+    "description": "Tell a story."
+  },
+  {
+    "name": "The Chronicler",
+    "description": "Tell 10 stories."
+  },
+  {
+    "name": "The Comedian",
+    "description": "Tell a joke."
+  },
+  {
+    "name": "The Humorist",
+    "description": "Tell 10 jokes."
+  },
+  {
+    "name": "The Jester",
+    "description": "Tell 50 jokes."
+  },
+  {
+    "name": "The Athlete",
+    "description": "Win a race."
+  },
+  {
+    "name": "The Runner",
+    "description": "Win 10 races."
+  },
+  {
+    "name": "The Champion",
+    "description": "Win 50 races."
+  },
+  {
+    "name": "The Swimmer",
+    "description": "Swim 1,000 meters."
+  },
+  {
+    "name": "The Mariner",
+    "description": "Swim 10,000 meters."
+  },
+  {
+    "name": "The Climber",
+    "description": "Climb a mountain."
+  },
+  {
+    "name": "The Mountaineer",
+    "description": "Climb 10 mountains."
+  },
+  {
+    "name": "The Spelunker",
+    "description": "Explore 5 caves."
+  },
+  {
+    "name": "The Caver",
+    "description": "Explore all caves."
+  },
+  {
+    "name": "The Survivor",
+    "description": "Survive for 10 days."
+  },
+  {
+    "name": "The Nomad",
+    "description": "Survive for 50 days."
+  },
+  {
+    "name": "The Hermit",
+    "description": "Survive for 100 days."
+  },
+  {
+    "name": "The Coder",
+    "description": "Write 10 lines of code."
+  },
+  {
+    "name": "The Developer",
+    "description": "Write 100 lines of code."
+  },
+  {
+    "name": "The Engineer",
+    "description": "Write 1,000 lines of code."
+  },
+  {
+    "name": "The Hacker",
+    "description": "Hack 5 systems."
+  },
+  {
+    "name": "The Cyberpunk",
+    "description": "Hack 50 systems."
+  },
+  {
+    "name": "The Courier",
+    "description": "Deliver 10 messages."
+  },
+  {
+    "name": "The Postman",
+    "description": "Deliver 50 messages."
+  },
+  {
+    "name": "The Messenger",
+    "description": "Deliver 100 messages."
+  },
+  {
+    "name": "The Thief",
+    "description": "Steal 10 items."
+  },
+  {
+    "name": "The Robber",
+    "description": "Steal 50 items."
+  },
+  {
+    "name": "The Burglar",
+    "description": "Steal 100 items."
+  },
+  {
+    "name": "The Assassin",
+    "description": "Assassinate 5 targets."
+  },
+  {
+    "name": "The Hitman",
+    "description": "Assassinate 50 targets."
+  },
+  {
+    "name": "The Professional",
+    "description": "Assassinate 100 targets."
+  },
+  {
+    "name": "The Pilot",
+    "description": "Fly a vehicle for 10 minutes."
+  },
+  {
+    "name": "The Aviator",
+    "description": "Fly a vehicle for 60 minutes."
+  },
+  {
+    "name": "The Astronaut",
+    "description": "Fly a vehicle for 1,000 minutes."
+  },
+  {
+    "name": "The Diver",
+    "description": "Dive for 10 minutes."
+  },
+  {
+    "name": "The Submariner",
+    "description": "Dive for 60 minutes."
+  },
+  {
+    "name": "The Oceanographer",
+    "description": "Dive for 1,000 minutes."
+  },
+  {
+    "name": "The Driver",
+    "description": "Drive a vehicle for 10 kilometers."
+  },
+  {
+    "name": "The Racer",
+    "description": "Drive a vehicle for 100 kilometers."
+  },
+  {
+    "name": "The Rallyist",
+    "description": "Drive a vehicle for 1,000 kilometers."
+  },
+  {
+    "name": "The Gardener",
+    "description": "Harvest 10 crops."
+  },
+  {
+    "name": "The Agriculturist",
+    "description": "Harvest 100 crops."
+  },
+  {
+    "name": "The Farmer",
+    "description": "Harvest 1,000 crops."
+  },
+  {
+    "name": "The Fisherman",
+    "description": "Catch 10 fish."
+  },
+  {
+    "name": "The Angler",
+    "description": "Catch 100 fish."
+  },
+  {
+    "name": "The Fisher King",
+    "description": "Catch 1,000 fish."
+  },
+  {
+    "name": "The Miner",
+    "description": "Mine 10 ores."
+  },
+  {
+    "name": "The Geologist",
+    "description": "Mine 100 ores."
+  },
+  {
+    "name": "The Prospector",
+    "description": "Mine 1,000 ores."
+  },
+  {
+    "name": "The Lumberjack",
+    "description": "Chop 10 trees."
+  },
+  {
+    "name": "The Forester",
+    "description": "Chop 100 trees."
+  },
+  {
+    "name": "The Woodsman",
+    "description": "Chop 1,000 trees."
+  },
+  {
+    "name": "The Hunter",
+    "description": "Hunt 10 animals."
+  },
+  {
+    "name": "The Tracker",
+    "description": "Hunt 100 animals."
+  },
+  {
+    "name": "The Predator",
+    "description": "Hunt 1,000 animals."
+  },
+  {
+    "name": "The Cook",
+    "description": "Cook 10 meals."
+  },
+  {
+    "name": "The Chef",
+    "description": "Cook 100 meals."
+  },
+  {
+    "name": "The Master Chef",
+    "description": "Cook 1,000 meals."
   },
   {
     "name": "The Alchemist",
-    "description": "Combine two different achievements to get a new one."
+    "description": "Brew 10 potions."
+  },
+  {
+    "name": "The Apothecary",
+    "description": "Brew 100 potions."
+  },
+  {
+    "name": "The Potion Master",
+    "description": "Brew 1,000 potions."
+  },
+  {
+    "name": "The Smith",
+    "description": "Craft 10 weapons."
+  },
+  {
+    "name": "The Blacksmith",
+    "description": "Craft 100 weapons."
+  },
+  {
+    "name": "The Weaponsmith",
+    "description": "Craft 1,000 weapons."
+  },
+  {
+    "name": "The Tailor",
+    "description": "Craft 10 pieces of armor."
+  },
+  {
+    "name": "The Armorer",
+    "description": "Craft 100 pieces of armor."
+  },
+  {
+    "name": "The Grandmaster Armorer",
+    "description": "Craft 1,000 pieces of armor."
+  },
+  {
+    "name": "The Scavenger",
+    "description": "Loot 100 containers."
+  },
+  {
+    "name": "The Hoarder",
+    "description": "Loot 1,000 containers."
+  },
+  {
+    "name": "The Thief",
+    "description": "Pickpocket 10 times."
+  },
+  {
+    "name": "The Pickpocket",
+    "description": "Pickpocket 100 times."
+  },
+  {
+    "name": "The Bandit",
+    "description": "Pickpocket 1,000 times."
+  },
+  {
+    "name": "The Trapper",
+    "description": "Set 10 traps."
+  },
+  {
+    "name": "The Hunter",
+    "description": "Set 100 traps."
+  },
+  {
+    "name": "The Assassin",
+    "description": "Set 1,000 traps."
+  },
+  {
+    "name": "The Sniper",
+    "description": "Get 10 headshots."
+  },
+  {
+    "name": "The Sharpshooter",
+    "description": "Get 100 headshots."
+  },
+  {
+    "name": "The Marksman",
+    "description": "Get 1,000 headshots."
+  },
+  {
+    "name": "The Brawler",
+    "description": "Punch 10 enemies."
+  },
+  {
+    "name": "The Boxer",
+    "description": "Punch 100 enemies."
+  },
+  {
+    "name": "The Champion",
+    "description": "Punch 1,000 enemies."
+  },
+  {
+    "name": "The Strategist",
+    "description": "Win 10 games of chess."
+  },
+  {
+    "name": "The Grandmaster",
+    "description": "Win 100 games of chess."
+  },
+  {
+    "name": "The Conqueror",
+    "description": "Win 1,000 games of chess."
+  },
+  {
+    "name": "The Puzzle Solver",
+    "description": "Solve 10 puzzles."
+  },
+  {
+    "name": "The Riddle Master",
+    "description": "Solve 100 puzzles."
+  },
+  {
+    "name": "The Enigma",
+    "description": "Solve 1,000 puzzles."
+  },
+  {
+    "name": "The Collector",
+    "description": "Collect 10 rare items."
+  },
+  {
+    "name": "The Curator",
+    "description": "Collect 100 rare items."
+  },
+  {
+    "name": "The Completionist",
+    "description": "Collect all rare items."
+  },
+  {
+    "name": "The Hoarder",
+    "description": "Fill your inventory."
+  },
+  {
+    "name": "The Pack Rat",
+    "description": "Fill your bank."
+  },
+  {
+    "name": "The Tycoon",
+    "description": "Own 100,000 gold."
+  },
+  {
+    "name": "The Millionaire",
+    "description": "Own 1,000,000 gold."
+  },
+  {
+    "name": "The Billionaire",
+    "description": "Own 1,000,000,000 gold."
+  },
+  {
+    "name": "The Dragon Slayer",
+    "description": "Defeat a dragon."
+  },
+  {
+    "name": "The God Slayer",
+    "description": "Defeat a god."
   }
 ]
