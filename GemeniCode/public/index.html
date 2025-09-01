@@ -25,11 +25,11 @@
         }
         .bingo-grid {
             display: grid;
-            width: 100%; /* Ensure grid takes full width of its container */
-            aspect-ratio: 1 / 1; /* Maintain a 1:1 aspect ratio */
+            width: 100%;
+            aspect-ratio: 1 / 1;
             border-radius: 0.75rem;
             overflow: hidden;
-            gap: 0.5rem; /* Consistent gap between grid cells */
+            gap: 0.5rem;
         }
         .bingo-cell {
             aspect-ratio: 1 / 1;
@@ -41,7 +41,7 @@
             transition: all 0.2s;
             position: relative;
             font-weight: bold;
-            text-align: center; /* Ensure text is centered horizontally */
+            text-align: center;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -81,7 +81,6 @@
             width: 90%;
             position: relative;
         }
-        /* New style for dynamic modal width */
         .modal-content.dynamic-width {
             max-width: 700px;
             width: 90%;
@@ -95,7 +94,6 @@
             font-weight: bold;
             cursor: pointer;
         }
-        /* Loading spinner */
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             width: 36px;
@@ -109,32 +107,31 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Updated styles for the info button */
         .info-btn {
             position: absolute;
-            top: 0.5em; /* Scale relative to font size */
-            right: 0.5em; /* Scale relative to font size */
+            top: 0.5em;
+            right: 0.5em;
             background-color: #6b7280;
             color: white;
             border-radius: 9999px;
-            width: 1.5em; /* Scale relative to font size */
-            height: 1.5em; /* Scale relative to font size */
+            width: 1.5em;
+            height: 1.5em;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             cursor: pointer;
             z-index: 10;
-            flex-shrink: 0; /* Prevent the info button from shrinking */
+            flex-shrink: 0;
         }
         .info-btn:hover {
             background-color: #4b5563;
         }
         .info-btn-text {
-            font-size: 0.6em; /* Font size relative to the button's size */
+            font-size: 0.6em;
         }
         .cell-text {
-            padding: 0.5rem; /* Consistent padding in rems */
+            padding: 0.5rem;
             flex-grow: 1;
             display: flex;
             align-items: center;
@@ -166,13 +163,11 @@
     <div id="main-container" class="bg-white p-8 rounded-lg shadow-lg w-full max-w-7xl mx-auto">
         <h1 class="text-3xl font-bold text-center mb-6">Battle Bingo</h1>
 
-        <!-- Landing Screen (2 options) -->
         <div id="landing-screen" class="space-y-4 text-center">
             <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="showCreateLobbyScreen()">Create Lobby</button>
             <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="showJoinLobbyScreen()">Join Lobby</button>
         </div>
 
-        <!-- Create Lobby Screen -->
         <div id="create-lobby-screen" class="hidden text-center space-y-4">
             <h2 class="text-2xl font-bold mb-4">Create a New Lobby</h2>
             <div class="mb-4">
@@ -186,7 +181,6 @@
             <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Back</button>
         </div>
 
-        <!-- Join Lobby Screen -->
         <div id="join-lobby-screen" class="hidden text-center space-y-4">
             <h2 class="text-2xl font-bold mb-4">Join an Existing Lobby</h2>
             <select id="role-select" class="w-full p-3 border rounded-md" onchange="toggleCodeInput()">
@@ -203,16 +197,13 @@
             <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Back</button>
         </div>
 
-        <!-- In-Lobby Screens -->
         <div id="lobby-screen" class="hidden">
             <h2 id="lobby-header" class="text-3xl font-bold text-center mb-6"></h2>
             <div id="lobby-content" class="w-full overflow-x-auto">
-                <!-- Content will be injected here by JS -->
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
     <div id="bingo-modal" class="modal" style="z-index: 101;">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('bingo-modal')">&times;</span>
@@ -237,7 +228,6 @@
         </div>
     </div>
     
-    <!-- Admin Manual Change Modal -->
     <div id="admin-manual-modal" class="modal">
         <div class="modal-content text-center">
             <span class="close-btn" onclick="closeModal('admin-manual-modal')">&times;</span>
@@ -262,7 +252,6 @@
         let globalLobbyState = null;
         let selectedAdminAchievement = null;
 
-        // UI screen management
         const screens = ['landing-screen', 'create-lobby-screen', 'join-lobby-screen', 'lobby-screen'];
         
         window.showScreen = function(screenId) {
@@ -313,7 +302,7 @@
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
                 showParticipantTab('board');
-            } else { // Admin
+            } else {
                 lobbyContent.innerHTML = `
                     <div class="flex justify-between items-center mb-4">
                         <p class="text-lg font-bold">Room Code: <span id="admin-room-code">${currentRoomCode}</span></p>
@@ -508,14 +497,18 @@
             if (!participantData) return;
 
             document.getElementById('review-modal-title').textContent = `Reviewing ${username}'s Board`;
-            renderBingoBoard(
-                'review-bingo-board',
+            
+            const boardContainer = document.getElementById('review-bingo-board');
+            renderInitialBoard(boardContainer, globalLobbyState.bingoBoard, globalLobbyState.boardSize);
+            updateBoardState(
+                boardContainer,
                 globalLobbyState.bingoBoard,
                 globalLobbyState.boardSize,
                 participantData.completedAchievements,
                 participantData.pendingReview,
                 username
             );
+            
             showModal('review-modal');
         }
 
@@ -561,14 +554,24 @@
             globalLobbyState = lobbyState;
             
             const isAdmin = lobbyState.adminCode === currentAdminCode;
+            let completedAchievements = [];
+            let pendingAchievements = [];
 
             if (isAdmin) {
-                renderBingoBoard(
-                    'admin-bingo-board',
+                completedAchievements = lobbyState.participants.flatMap(p => p.completedAchievements);
+                pendingAchievements = lobbyState.participants.flatMap(p => p.pendingReview);
+                
+                const boardContainer = document.getElementById('admin-bingo-board');
+                if (boardContainer.innerHTML === '') {
+                    renderInitialBoard(boardContainer, lobbyState.bingoBoard, lobbyState.boardSize);
+                }
+                updateBoardState(
+                    boardContainer,
                     lobbyState.bingoBoard,
                     lobbyState.boardSize,
-                    lobbyState.participants.flatMap(p => p.completedAchievements),
-                    lobbyState.participants.flatMap(p => p.pendingReview)
+                    completedAchievements,
+                    pendingAchievements,
+                    null
                 );
                 updateAdminDashboard(lobbyState);
             }
@@ -579,10 +582,14 @@
                     currentTeam = participant.team;
                     document.getElementById('my-team').textContent = currentTeam.toUpperCase();
                     
+                    const boardContainer = document.getElementById('participant-bingo-board');
+                    if (boardContainer.innerHTML === '') {
+                         renderInitialBoard(boardContainer, lobbyState.bingoBoard, lobbyState.boardSize);
+                    }
+                    
                     const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
-
-                    renderBingoBoard(
-                        'participant-bingo-board',
+                    updateBoardState(
+                        boardContainer,
                         globalLobbyState.bingoBoard,
                         globalLobbyState.boardSize,
                         globalLobbyState.participants.flatMap(p => p.completedAchievements),
@@ -604,7 +611,7 @@
             const messageElement = document.createElement('div');
             messageElement.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
             chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         });
 
         function updateAdminDashboard(lobbyState) {
@@ -669,25 +676,16 @@
             });
         }
         
-        function renderBingoBoard(boardContainerId, board, boardSize, completedAchievements, pendingAchievements, reviewUsername = null) {
-            const boardContainer = document.getElementById(boardContainerId);
-            if (!boardContainer) {
-                console.error(`Board container with ID ${boardContainerId} not found.`);
-                return;
-            }
-            boardContainer.innerHTML = '';
-            boardContainer.style.gridTemplateColumns = `repeat(${boardSize}, minmax(0, 1fr))`;
+        function updateBoardState(boardContainer, board, boardSize, completedAchievements, pendingAchievements, reviewUsername = null) {
+            const cells = boardContainer.children;
+            board.forEach((achievement, index) => {
+                const cell = cells[index];
+                if (!cell) return;
 
-            // Calculate a responsive font size based on the board size
-            const baseFontSize = Math.max(0.8, 3.5 / boardSize);
-
-            board.forEach(achievement => {
-                const cell = createBingoCell(achievement);
-                // Set the font size on the cell itself. All child elements using 'em' will scale with this.
-                cell.style.fontSize = `${baseFontSize}vmin`;
-                
                 const completed = completedAchievements.find(a => a.name === achievement.name);
                 const isPending = pendingAchievements.includes(achievement.name);
+                
+                const completeBtn = cell.querySelector('.complete-btn');
                 
                 cell.classList.remove('bg-yellow-400', 'cell-pending', 'bg-red-500', 'cell-red', 'bg-blue-500', 'cell-blue');
                 if (completed) {
@@ -701,56 +699,57 @@
                 }
                 
                 if (reviewUsername) {
-                    const isPendingForReview = pendingAchievements.includes(achievement.name);
-                    if (isPendingForReview) {
-                        const completeBtn = document.createElement('button');
-                        completeBtn.textContent = 'Mark Complete';
-                        completeBtn.className = 'mt-auto bg-green-500 text-white font-bold rounded-md';
-                        // Apply responsive padding based on font size
-                        const paddingX = Math.max(0.3, 1.5 / boardSize);
-                        const paddingY = Math.max(0.15, 0.75 / boardSize);
-                        completeBtn.style.fontSize = `${baseFontSize * 0.8}vmin`;
-                        completeBtn.style.padding = `${paddingY}vmin ${paddingX}vmin`;
+                    if (isPending && !completeBtn) {
+                        const newBtn = document.createElement('button');
+                        newBtn.textContent = 'Mark Complete';
+                        newBtn.className = 'complete-btn mt-auto bg-green-500 text-white font-bold rounded-md';
+                        newBtn.onclick = () => markAsCompleted(reviewUsername, achievement.name);
+                        cell.appendChild(newBtn);
+                    } else if (!isPending && completeBtn) {
+                        cell.removeChild(completeBtn);
+                    }
+                } else if (!isParticipant) {
+                    if(completeBtn) {
+                       cell.removeChild(completeBtn);
+                    }
+                }
+            });
+        }
 
-                        completeBtn.onclick = () => markAsCompleted(reviewUsername, achievement.name);
-                        cell.appendChild(completeBtn);
-                    }
-                } else if (!completed) {
-                    cell.addEventListener('click', () => {
-                         const index = localSelectedAchievements.indexOf(achievement.name);
-                         if (index > -1) {
-                             localSelectedAchievements.splice(index, 1);
-                         } else {
-                             localSelectedAchievements.push(achievement.name);
-                         }
-                         const participant = globalLobbyState.participants.find(p => p.username === currentUsername);
-                         if (participant) {
-                             const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
-                             renderBingoBoard(
-                                'participant-bingo-board',
-                                globalLobbyState.bingoBoard,
-                                globalLobbyState.boardSize,
-                                globalLobbyState.participants.flatMap(p => p.completedAchievements),
-                                allPending
-                            );
-                         }
-                    });
-                }
-                
-                if (!reviewUsername) {
-                     // For admin, the click event opens the manual change modal
-                    if (!isParticipant) {
-                        cell.addEventListener('click', () => showAdminManualModal(achievement.name));
-                    }
-                }
+        function renderInitialBoard(boardContainer, board, boardSize) {
+            boardContainer.innerHTML = '';
+            boardContainer.style.gridTemplateColumns = `repeat(${boardSize}, minmax(0, 1fr))`;
+            
+            board.forEach(achievement => {
+                const cell = createBingoCell(achievement);
                 boardContainer.appendChild(cell);
             });
+            
+            setTimeout(() => {
+                const firstCell = boardContainer.querySelector('.bingo-cell');
+                if (!firstCell) return;
+                const cellWidth = firstCell.offsetWidth;
+                const baseFontSize = cellWidth * 0.12;
+                const completeButtonFontSize = cellWidth * 0.09;
+                
+                Array.from(boardContainer.children).forEach(cell => {
+                    cell.style.fontSize = `${baseFontSize}px`;
+                    const completeBtn = cell.querySelector('.complete-btn');
+                    if (completeBtn) {
+                        completeBtn.style.fontSize = `${completeButtonFontSize}px`;
+                        const paddingY = cellWidth * 0.02;
+                        const paddingX = cellWidth * 0.04;
+                        completeBtn.style.padding = `${paddingY}px ${paddingX}px`;
+                    }
+                });
+            }, 0);
         }
         
         function createBingoCell(achievement) {
             const cell = document.createElement('div');
             cell.className = `bingo-cell rounded-lg shadow relative`;
-            
+            cell.setAttribute('data-name', achievement.name);
+
             const achievementText = document.createElement('div');
             achievementText.className = 'cell-text';
             achievementText.textContent = achievement.name;
@@ -759,7 +758,6 @@
             infoBtn.className = 'info-btn';
             infoBtn.innerHTML = `<span class="info-btn-text">i</span>`;
             
-            // Add event listener to the info button
             infoBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 document.getElementById('modal-achievement-name').textContent = achievement.name;
@@ -770,6 +768,31 @@
             cell.appendChild(achievementText);
             cell.appendChild(infoBtn);
             
+            if (isParticipant) {
+                cell.addEventListener('click', () => {
+                     const index = localSelectedAchievements.indexOf(achievement.name);
+                     if (index > -1) {
+                         localSelectedAchievements.splice(index, 1);
+                     } else {
+                         localSelectedAchievements.push(achievement.name);
+                     }
+                     const participant = globalLobbyState.participants.find(p => p.username === currentUsername);
+                     if (participant) {
+                         const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
+                         const boardContainer = document.getElementById('participant-bingo-board');
+                         updateBoardState(
+                            boardContainer,
+                            globalLobbyState.bingoBoard,
+                            globalLobbyState.boardSize,
+                            globalLobbyState.participants.flatMap(p => p.completedAchievements),
+                            allPending
+                        );
+                     }
+                });
+            } else {
+                 cell.addEventListener('click', () => showAdminManualModal(achievement.name));
+            }
+
             return cell;
         }
 
