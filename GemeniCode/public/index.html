@@ -140,6 +140,24 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
+        #chat-log {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+        }
+        .chat-message-container {
+            margin-bottom: 0.5rem;
+        }
+        .chat-username {
+            font-weight: bold;
+            font-size: 0.875rem;
+            color: #4f46e5;
+        }
+        .chat-message {
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -267,13 +285,42 @@
             
             if (isParticipant) {
                 lobbyContent.innerHTML = `
-                    <p class="text-xl font-bold text-center mb-4">Your Team: <span id="my-team"></span></p>
-                    <div id="participant-board-container" class="max-w-4xl mx-auto">
-                        <div id="participant-bingo-board" class="bingo-grid"></div>
-                        <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" onclick="requestReview()">Request Review</button>
+                    <div class="flex border-b border-gray-300">
+                        <button id="board-tab-btn" class="flex-1 py-3 px-6 text-center border-b-2 border-transparent hover:border-blue-500 font-bold text-gray-700 transition duration-150 ease-in-out">Board</button>
+                        <button id="chat-tab-btn" class="flex-1 py-3 px-6 text-center border-b-2 border-transparent hover:border-blue-500 font-bold text-gray-700 transition duration-150 ease-in-out">Chat</button>
+                    </div>
+
+                    <div id="board-tab-content" class="p-4">
+                        <p class="text-xl font-bold text-center mb-4">Your Team: <span id="my-team"></span></p>
+                        <div id="participant-board-container" class="max-w-4xl mx-auto">
+                            <div id="participant-bingo-board" class="bingo-grid"></div>
+                            <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" onclick="requestReview()">Request Review</button>
+                        </div>
+                    </div>
+                    
+                    <div id="chat-tab-content" class="p-4 hidden">
+                        <h3 class="text-xl font-bold mb-2 text-center">Team Chat</h3>
+                        <div id="chat-log" class="bg-gray-100 mb-2"></div>
+                        <div class="flex space-x-2">
+                            <input type="text" id="chat-input" class="flex-1 p-2 border rounded-md" placeholder="Type a message...">
+                            <button id="chat-send-btn" class="btn-primary py-2 px-4 rounded-md font-bold">Send</button>
+                        </div>
                     </div>
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
+                
+                document.getElementById('board-tab-btn').addEventListener('click', () => showTab('board'));
+                document.getElementById('chat-tab-btn').addEventListener('click', () => showTab('chat'));
+
+                const chatInput = document.getElementById('chat-input');
+                const chatSendBtn = document.getElementById('chat-send-btn');
+                chatSendBtn.addEventListener('click', () => sendChatMessage());
+                chatInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        sendChatMessage();
+                    }
+                });
+                showTab('board');
             } else {
                 lobbyContent.innerHTML = `
                     <div class="flex justify-between items-center mb-4">
@@ -305,6 +352,25 @@
                 `;
             }
             showScreen('lobby-screen');
+        }
+
+        window.showTab = function(tabName) {
+            const tabs = ['board', 'chat'];
+            tabs.forEach(tab => {
+                const content = document.getElementById(`${tab}-tab-content`);
+                const button = document.getElementById(`${tab}-tab-btn`);
+                if (tab === tabName) {
+                    content.classList.remove('hidden');
+                    button.classList.add('border-blue-500');
+                    button.classList.remove('text-gray-700');
+                    button.classList.add('text-blue-600');
+                } else {
+                    content.classList.add('hidden');
+                    button.classList.remove('border-blue-500');
+                    button.classList.remove('text-blue-600');
+                    button.classList.add('text-gray-700');
+                }
+            });
         }
 
         window.showModal = function(modalId, title = '', message = '') {
@@ -476,6 +542,35 @@
             });
         }
         
+        window.sendChatMessage = function() {
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value.trim();
+            if (message) {
+                socket.emit('sendChatMessage', { roomCode: currentRoomCode, message: message });
+                chatInput.value = '';
+            }
+        }
+        
+        window.addChatMessage = function(username, message) {
+            const chatLog = document.getElementById('chat-log');
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'chat-message-container';
+            
+            const userSpan = document.createElement('span');
+            userSpan.className = 'chat-username';
+            userSpan.textContent = `${username}: `;
+            
+            const messageSpan = document.createElement('span');
+            messageSpan.className = 'chat-message';
+            messageSpan.textContent = message;
+            
+            messageContainer.appendChild(userSpan);
+            messageContainer.appendChild(messageSpan);
+            
+            chatLog.appendChild(messageContainer);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+        
         socket.on('lobbyUpdate', (lobbyState) => {
             globalLobbyState = lobbyState;
             
@@ -519,6 +614,10 @@
                 socket.emit('joinRoom', { roomCode: currentRoomCode });
                 showLobbyScreen('participant');
             }
+        });
+        
+        socket.on('chatMessage', ({ username, message }) => {
+            addChatMessage(username, message);
         });
 
         function updateAdminDashboard(lobbyState) {

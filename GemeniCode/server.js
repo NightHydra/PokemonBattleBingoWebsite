@@ -126,7 +126,7 @@ io.on('connection', (socket) => {
             const participant = lobby.participants.find(p => p.username === username);
             if (participant) {
                 participant.pendingReview = achievements;
-                lobby.pendingRequests = lobby.pendingRequests.filter(req => req.username !== username);
+                lobby.pendingRequests = lobby.pendingRequests.filter(req => req.username !== username || req.achievementName !== achievementName);
                 achievements.forEach(achievementName => {
                     lobby.pendingRequests.push({ username, achievementName });
                 });
@@ -177,6 +177,21 @@ io.on('connection', (socket) => {
             if (achievement) {
                 achievement.team = newTeam;
                 io.to(roomCode).emit('lobbyUpdate', lobby);
+            }
+        }
+    });
+    
+    socket.on('sendChatMessage', ({ roomCode, message }) => {
+        const lobby = lobbies[roomCode];
+        if (lobby) {
+            const participant = lobby.participants.find(p => p.socketId === socket.id);
+            if (participant) {
+                const team = participant.team;
+                const teamMembers = lobby.participants.filter(p => p.team === team);
+                
+                teamMembers.forEach(member => {
+                    io.to(member.socketId).emit('chatMessage', { username: participant.username, message });
+                });
             }
         }
     });
