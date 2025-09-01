@@ -29,6 +29,7 @@
             aspect-ratio: 1 / 1; /* Maintain a 1:1 aspect ratio */
             border-radius: 0.75rem;
             overflow: hidden;
+            gap: 0.5rem; /* Consistent gap between grid cells */
         }
         .bingo-cell {
             aspect-ratio: 1 / 1;
@@ -40,6 +41,9 @@
             transition: all 0.2s;
             position: relative;
             font-weight: bold;
+            text-align: center; /* Ensure text is centered horizontally */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         .bingo-cell:not(.bg-yellow-400):not(.bg-red-500):not(.bg-blue-500):hover {
             background-color: #e5e7eb;
@@ -77,7 +81,7 @@
             width: 90%;
             position: relative;
         }
-        /* New style for dynamic modal width - adjusted again */
+        /* New style for dynamic modal width */
         .modal-content.dynamic-width {
             max-width: 700px;
             width: 90%;
@@ -105,24 +109,23 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Updated styles for the info button to be responsive */
+        /* Updated styles for the info button */
         .info-btn {
             position: absolute;
-            top: 5%; /* Position from the top */
-            right: 5%; /* Position from the right */
+            top: 0.5rem; /* Use rem for consistent spacing */
+            right: 0.5rem; /* Use rem for consistent spacing */
             background-color: #6b7280;
             color: white;
             border-radius: 9999px;
-            width: 15%; /* Responsive width */
-            height: 15%; /* Responsive height */
-            max-width: 1.5rem; /* Max size to prevent it from getting too large */
-            max-height: 1.5rem;
+            width: 1.5rem; /* Fixed width */
+            height: 1.5rem; /* Fixed height */
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             cursor: pointer;
             z-index: 10;
+            flex-shrink: 0; /* Prevent the info button from shrinking */
         }
         .info-btn:hover {
             background-color: #4b5563;
@@ -131,12 +134,15 @@
             font-size: 0.6em; /* Font size relative to the button's size */
         }
         .cell-text {
-            padding: 5%; /* Padding relative to cell size */
+            padding: 0.5rem; /* Consistent padding in rems */
             flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-size: 1rem; /* Set a default font size */
         }
         .chat-container {
             height: 400px;
@@ -201,7 +207,7 @@
         <!-- In-Lobby Screens -->
         <div id="lobby-screen" class="hidden">
             <h2 id="lobby-header" class="text-3xl font-bold text-center mb-6"></h2>
-            <div id="lobby-content">
+            <div id="lobby-content" class="w-full overflow-x-auto">
                 <!-- Content will be injected here by JS -->
             </div>
         </div>
@@ -241,7 +247,7 @@
             <div class="grid grid-cols-1 gap-4">
                 <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md" onclick="setAchievementTeam('red')">Mark for Red Team</button>
                 <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md" onclick="setAchievementTeam('blue')">Mark for Blue Team</button>
-                <button class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-md" onclick="setAchievementTeam(null)">Clear</button>
+                <button class="bg-gray-400 hover:bg-gray-500 text-white font-bold" onclick="setAchievementTeam(null)">Clear</button>
             </div>
         </div>
     </div>
@@ -296,7 +302,7 @@
                     </div>
                     <div id="participant-board-container" class="max-w-4xl mx-auto">
                         <div id="participant-bingo-board" class="bingo-grid"></div>
-                        <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" style="display: none;" onclick="requestReview()">Request Review</button>
+                        <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" onclick="requestReview()">Request Review</button>
                     </div>
                     <div id="participant-chat-container" class="chat-container hidden">
                         <div id="chat-messages" class="chat-messages rounded-md shadow"></div>
@@ -342,8 +348,11 @@
         }
 
         window.showParticipantTab = function(tab) {
-            document.getElementById('participant-board-container').classList.add('hidden');
-            document.getElementById('participant-chat-container').classList.add('hidden');
+            const boardContainer = document.getElementById('participant-board-container');
+            const chatContainer = document.getElementById('participant-chat-container');
+
+            if (boardContainer) boardContainer.classList.add('hidden');
+            if (chatContainer) chatContainer.classList.add('hidden');
             
             document.getElementById('board-tab-btn').classList.remove('bg-indigo-600', 'text-white');
             document.getElementById('board-tab-btn').classList.add('bg-gray-300');
@@ -351,13 +360,17 @@
             document.getElementById('chat-tab-btn').classList.add('bg-gray-300');
             
             if (tab === 'board') {
-                document.getElementById('participant-board-container').classList.remove('hidden');
-                document.getElementById('board-tab-btn').classList.remove('bg-gray-300');
-                document.getElementById('board-tab-btn').classList.add('bg-indigo-600', 'text-white');
+                if (boardContainer) {
+                    boardContainer.classList.remove('hidden');
+                    document.getElementById('board-tab-btn').classList.remove('bg-gray-300');
+                    document.getElementById('board-tab-btn').classList.add('bg-indigo-600', 'text-white');
+                }
             } else {
-                document.getElementById('participant-chat-container').classList.remove('hidden');
-                document.getElementById('chat-tab-btn').classList.remove('bg-gray-300');
-                document.getElementById('chat-tab-btn').classList.add('bg-indigo-600', 'text-white');
+                if (chatContainer) {
+                    chatContainer.classList.remove('hidden');
+                    document.getElementById('chat-tab-btn').classList.remove('bg-gray-300');
+                    document.getElementById('chat-tab-btn').classList.add('bg-indigo-600', 'text-white');
+                }
             }
         }
 
@@ -659,15 +672,15 @@
         
         function renderBingoBoard(boardContainerId, board, boardSize, completedAchievements, pendingAchievements, reviewUsername = null) {
             const boardContainer = document.getElementById(boardContainerId);
+            if (!boardContainer) {
+                console.error(`Board container with ID ${boardContainerId} not found.`);
+                return;
+            }
             boardContainer.innerHTML = '';
             boardContainer.style.gridTemplateColumns = `repeat(${boardSize}, minmax(0, 1fr))`;
-            
-            const baseFontSize = 1.0; 
-            const minFontSize = 0.5;
-            const fontSize = Math.max(minFontSize, baseFontSize / (boardSize / 5));
 
             board.forEach(achievement => {
-                const cell = createBingoCell(achievement, fontSize);
+                const cell = createBingoCell(achievement);
                 
                 const completed = completedAchievements.find(a => a.name === achievement.name);
                 const isPending = pendingAchievements.includes(achievement.name);
@@ -724,10 +737,9 @@
             });
         }
         
-        function createBingoCell(achievement, fontSize) {
+        function createBingoCell(achievement) {
             const cell = document.createElement('div');
             cell.className = `bingo-cell rounded-lg shadow relative`;
-            cell.style.fontSize = `${fontSize}rem`;
             
             const achievementText = document.createElement('div');
             achievementText.className = 'cell-text';
