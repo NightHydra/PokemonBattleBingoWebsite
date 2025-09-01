@@ -58,7 +58,8 @@ app.post('/api/create-lobby', (req, res) => {
     LOBBIES[roomCode] = {
         adminCode,
         bingoBoard,
-        participants: {},
+        participants: [],
+        pendingParticipants: [],
         chat: []
     };
 
@@ -74,22 +75,13 @@ app.post('/api/join-lobby', (req, res) => {
     if (!lobby) {
         return res.status(404).json({ error: 'Lobby not found.' });
     }
-
+    
+    // Check if the user is a participant trying to join with a code
     if (role === 'participant') {
-        if (!username) {
-            return res.status(400).json({ error: 'Username is required.' });
-        }
-        if (lobby.participants[username]) {
-            return res.status(409).json({ error: 'Username already exists in this lobby.' });
-        }
-        lobby.participants[username] = {
-            pendingReview: [],
-            completedAchievements: []
-        };
-        console.log(`Participant ${username} joined lobby ${roomCode}`);
-        io.to(roomCode).emit('lobbyUpdate', lobby);
-        return res.json({ success: true, lobbyData: lobby });
-    } else if (role === 'admin') {
+        return res.status(400).json({ error: 'Participants cannot join directly. They must request access.' });
+    }
+
+    if (role === 'admin') {
         if (adminCode !== lobby.adminCode) {
             return res.status(401).json({ error: 'Invalid admin code.' });
         }
@@ -114,27 +106,70 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('requestJoin', ({ roomCode, username }) => {
+        const lobby = LOBBIES[roomCode];
+        if (lobby) {
+            // Check if the username is already in active or pending lists
+            const isUsernameTaken = lobby.participants.some(p => p.username === username) || lobby.pendingParticipants.some(p => p.username === username);
+            if (isUsernameTaken) {
+                socket.emit('joinError', 'Username already exists or is pending approval.');
+                return;
+            }
+            // Store username and socket.id in pending list
+            lobby.pendingParticipants.push({ username, socketId: socket.id });
+            io.to(roomCode).emit('lobbyUpdate', lobby);
+        }
+    });
+
+    socket.on('approveJoin', ({ roomCode, username, team }) => {
+        const lobby = LOBBIES[roomCode];
+        if (lobby) {
+            // Find the pending participant's object and get their socketId
+            const pendingParticipant = lobby.pendingParticipants.find(p => p.username === username);
+            if (!pendingParticipant) return; // Participant not found in pending list
+
+            // Remove from pending list
+            lobby.pendingParticipants = lobby.pendingParticipants.filter(p => p.username !== username);
+            
+            // Add to active participants
+            lobby.participants.push({
+                username,
+                team,
+                pendingReview: [],
+                completedAchievements: []
+            });
+            
+            // Emit full lobby update to everyone
+            io.to(roomCode).emit('lobbyUpdate', lobby);
+            
+            // Emit specific approval event to only the approved participant
+            io.to(pendingParticipant.socketId).emit('participantApproved', { username });
+        }
+    });
+
     socket.on('requestReview', ({ roomCode, username, achievements }) => {
         const lobby = LOBBIES[roomCode];
-        if (lobby && lobby.participants[username]) {
-            const participant = lobby.participants[username];
+        const participant = lobby.participants.find(p => p.username === username);
+        if (lobby && participant) {
             participant.pendingReview = [...new Set([...participant.pendingReview, ...achievements])];
             io.to(roomCode).emit('lobbyUpdate', lobby);
         }
     });
 
-    socket.on('markComplete', ({ roomCode, username, achievementName }) => {
+    socket.on('markComplete', ({ roomCode, username, achievementName, team }) => {
         const lobby = LOBBIES[roomCode];
-        if (lobby && lobby.participants[username]) {
-            const participant = lobby.participants[username];
+        const participant = lobby.participants.find(p => p.username === username);
+        if (lobby && participant) {
             
             // Remove from pending
             participant.pendingReview = participant.pendingReview.filter(name => name !== achievementName);
 
             // Add to completed
-            if (!participant.completedAchievements.includes(achievementName)) {
-                participant.completedAchievements.push(achievementName);
+            const existingAchievement = participant.completedAchievements.find(a => a.name === achievementName);
+            if (!existingAchievement) {
+                participant.completedAchievements.push({ name: achievementName, team });
             }
+
             io.to(roomCode).emit('lobbyUpdate', lobby);
         }
     });
