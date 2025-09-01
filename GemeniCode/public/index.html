@@ -382,6 +382,16 @@
             });
         }
         
+        window.dismissReview = function(username, achievementName) {
+            const participantData = globalLobbyState.participants.find(p => p.username === username);
+            if (!participantData) return;
+            socket.emit('dismissReview', {
+                roomCode: currentRoomCode,
+                username,
+                achievementName
+            });
+        }
+
         window.showReviewModal = function(username) {
             if (!globalLobbyState) return;
             const participantData = globalLobbyState.participants.find(p => p.username === username);
@@ -488,7 +498,8 @@
                         <span class="text-sm">${request.achievementName}</span>
                     </div>
                     <div>
-                        <button class="py-1 px-3 rounded-md bg-green-500 text-white font-bold" onclick="markAsCompleted('${request.username}', '${request.achievementName}')">Complete</button>
+                        <button class="py-1 px-3 rounded-md bg-green-500 text-white font-bold mr-2" onclick="markAsCompleted('${request.username}', '${request.achievementName}')">Complete</button>
+                        <button class="py-1 px-3 rounded-md bg-gray-500 text-white font-bold" onclick="dismissReview('${request.username}', '${request.achievementName}')">Dismiss</button>
                     </div>
                 `;
                 reviewRequestsList.appendChild(li);

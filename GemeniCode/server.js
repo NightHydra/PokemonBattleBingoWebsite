@@ -185,6 +185,22 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('dismissReview', ({ roomCode, username, achievementName }) => {
+        const lobby = LOBBIES[roomCode];
+        const participant = lobby.participants.find(p => p.username === username);
+
+        if (lobby && participant) {
+            // Remove the achievement from the participant's pending list
+            participant.pendingReview = participant.pendingReview.filter(name => name !== achievementName);
+
+            // Remove the specific request from the global pending requests queue
+            lobby.pendingRequests = lobby.pendingRequests.filter(req => !(req.username === username && req.achievementName === achievementName));
+            
+            // Send the updated lobby state to all connected clients
+            io.to(roomCode).emit('lobbyUpdate', lobby);
+        }
+    });
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
