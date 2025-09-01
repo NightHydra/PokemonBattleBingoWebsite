@@ -10,29 +10,7 @@ const io = new Server(server);
 
 const LOBBIES = {};
 
-// Default achievements if achievements.json is not found or is invalid
-let ACHIEVEMENTS = [
-    {
-        "name": "First Steps",
-        "description": "Complete your first objective."
-    },
-    {
-        "name": "Social Butterfly",
-        "description": "Join a public lobby with at least 5 other people."
-    },
-    {
-        "name": "Lone Wolf",
-        "description": "Create and complete an objective in a private room."
-    },
-    {
-        "name": "Completionist",
-        "description": "Complete 10 objectives in a single game."
-    },
-    {
-        "name": "Speed Demon",
-        "description": "Complete a single objective in under 10 seconds."
-    }
-];
+let ACHIEVEMENTS = [];
 
 // Attempt to read achievements from achievements.json
 const achievementsFilePath = path.join(__dirname, 'achievements.json');
@@ -43,10 +21,10 @@ try {
         ACHIEVEMENTS = loadedAchievements;
         console.log(`Successfully loaded ${ACHIEVEMENTS.length} achievements from achievements.json.`);
     } else {
-        console.warn('achievements.json is empty or not a valid array. Using default achievements.');
+        console.warn('achievements.json is empty or not a valid array. The application may not function correctly.');
     }
 } catch (error) {
-    console.error('Error reading achievements.json. Using default achievements.');
+    console.error('Error reading achievements.json. The application will not function correctly without an achievements file.');
     console.error(error);
 }
 
@@ -62,13 +40,17 @@ app.get('/', (req, res) => {
 // Endpoint to create a new lobby
 app.post('/api/create-lobby', (req, res) => {
     const boardSize = parseInt(req.body.boardSize, 10);
-    if (isNaN(boardSize) || boardSize < 3 || boardSize > 7) {
-        return res.status(400).json({ error: 'Invalid board size. Must be between 3 and 7.' });
+    if (isNaN(boardSize) || boardSize < 3 || boardSize > 16) {
+        return res.status(400).json({ error: 'Invalid board size. Must be between 3 and 16.' });
     }
 
     const roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
     const adminCode = Math.random().toString(36).substring(2, 8);
     const requiredAchievements = boardSize * boardSize;
+
+    if (ACHIEVEMENTS.length === 0) {
+        return res.status(500).json({ error: "No achievements found. Please ensure achievements.json is a valid file." });
+    }
 
     if (ACHIEVEMENTS.length < requiredAchievements) {
         return res.status(500).json({ error: `Not enough achievements to create a ${boardSize}x${boardSize} board. Please try a smaller size.` });

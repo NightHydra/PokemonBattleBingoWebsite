@@ -36,8 +36,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 0.5rem;
-            text-align: center;
             border: 1px solid #d1d5db;
             transition: all 0.2s;
             position: relative;
@@ -79,10 +77,11 @@
             width: 90%;
             position: relative;
         }
-        /* New style for dynamic modal width */
+        /* New style for dynamic modal width - adjusted again */
         .modal-content.dynamic-width {
-            max-width: 95%; /* Allow it to grow to 95% of screen width */
-            width: fit-content;
+            max-width: 700px;
+            width: 90%;
+            min-width: 300px;
         }
         .close-btn {
             position: absolute;
@@ -106,26 +105,38 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* New styles for the info button */
+        /* Updated styles for the info button to be responsive */
         .info-btn {
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
+            top: 5%; /* Position from the top */
+            right: 5%; /* Position from the right */
             background-color: #6b7280;
             color: white;
             border-radius: 9999px;
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 15%; /* Responsive width */
+            height: 15%; /* Responsive height */
+            max-width: 1.5rem; /* Max size to prevent it from getting too large */
+            max-height: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
             font-weight: bold;
             cursor: pointer;
             z-index: 10;
         }
         .info-btn:hover {
             background-color: #4b5563;
+        }
+        .info-btn-text {
+            font-size: 0.6em; /* Font size relative to the button's size */
+        }
+        .cell-text {
+            padding: 5%; /* Padding relative to cell size */
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
     </style>
 </head>
@@ -145,7 +156,7 @@
             <h2 class="text-2xl font-bold mb-4">Create a New Lobby</h2>
             <div class="mb-4">
                 <label for="board-size" class="block text-gray-700 font-semibold mb-2">Board Size (e.g., 5 for 5x5):</label>
-                <input type="number" id="board-size" class="w-full p-3 border rounded-md" value="5" min="3" max="7">
+                <input type="number" id="board-size" class="w-full p-3 border rounded-md" value="5" min="3" max="16">
             </div>
             <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="createLobby()">Generate Room Code</button>
             <div class="flex justify-center mt-2">
@@ -497,9 +508,9 @@
 
                     renderBingoBoard(
                         'participant-bingo-board',
-                        lobbyState.bingoBoard,
-                        lobbyState.boardSize,
-                        lobbyState.participants.flatMap(p => p.completedAchievements),
+                        globalLobbyState.bingoBoard,
+                        globalLobbyState.boardSize,
+                        globalLobbyState.participants.flatMap(p => p.completedAchievements),
                         allPending
                     );
                 }
@@ -580,9 +591,8 @@
             boardContainer.innerHTML = '';
             boardContainer.style.gridTemplateColumns = `repeat(${boardSize}, minmax(0, 1fr))`;
             
-            // Calculate font size based on board size
-            const baseFontSize = 1.0; // Default font size in rem
-            const minFontSize = 0.5; // Minimum font size in rem
+            const baseFontSize = 1.0; 
+            const minFontSize = 0.5;
             const fontSize = Math.max(minFontSize, baseFontSize / (boardSize / 5));
 
             board.forEach(achievement => {
@@ -645,16 +655,16 @@
         
         function createBingoCell(achievement, fontSize) {
             const cell = document.createElement('div');
-            cell.className = `bingo-cell flex-1 rounded-lg shadow relative`;
+            cell.className = `bingo-cell rounded-lg shadow relative`;
             cell.style.fontSize = `${fontSize}rem`;
             
             const achievementText = document.createElement('div');
-            achievementText.className = 'flex-grow flex items-center justify-center p-2 text-center';
+            achievementText.className = 'cell-text';
             achievementText.textContent = achievement.name;
             
             const infoBtn = document.createElement('div');
             infoBtn.className = 'info-btn';
-            infoBtn.textContent = 'i';
+            infoBtn.innerHTML = `<span class="info-btn-text">i</span>`;
             
             // Add event listener to the info button
             infoBtn.addEventListener('click', (e) => {
