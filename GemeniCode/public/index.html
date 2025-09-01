@@ -196,7 +196,7 @@
         let currentAdminCode = '';
         let currentUsername = '';
         let isParticipant = false;
-        let selectedAchievements = [];
+        let localSelectedAchievements = [];
         let globalLobbyState = null;
 
         // UI screen management
@@ -307,7 +307,7 @@
             if (role === 'participant') {
                 socket.emit('requestJoin', { roomCode, username });
                 currentUsername = username;
-                currentRoomCode = roomCode; // Set the room code for the participant
+                currentRoomCode = roomCode;
                 showModal('custom-modal', 'Request Sent', 'Your request to join has been sent. Waiting for admin approval.');
             } else {
                 const payload = { roomCode, role, adminCode };
@@ -339,16 +339,16 @@
         }
 
         window.requestReview = function() {
-            if (selectedAchievements.length === 0) {
+            if (localSelectedAchievements.length === 0) {
                 showModal('custom-modal', 'Error', 'Please select at least one achievement to review.');
                 return;
             }
             socket.emit('requestReview', {
                 roomCode: currentRoomCode,
                 username: currentUsername,
-                achievements: selectedAchievements
+                achievements: localSelectedAchievements
             });
-            selectedAchievements = [];
+            localSelectedAchievements = [];
             showModal('custom-modal', 'Success', 'Review request sent!');
         }
         
@@ -389,7 +389,7 @@
                 if (participant) {
                     document.getElementById('request-review-btn').style.display = 'block';
                     document.getElementById('my-team').textContent = participant.team.toUpperCase();
-                    updateBingoBoard('participant-bingo-board', lobbyState.bingoBoard, participant.completedAchievements, participant.pendingReview);
+                    updateBingoBoard('participant-bingo-board', lobbyState);
                 }
             } else { // Admin
                 updateAdminDashboard(lobbyState);
@@ -398,9 +398,6 @@
 
         socket.on('participantApproved', ({ username }) => {
             if (username === currentUsername) {
-                // The participant is now officially in the lobby.
-                // Request the lobby state one more time to avoid any race conditions
-                // The server will respond with a lobbyUpdate event
                 socket.emit('joinRoom', { roomCode: currentRoomCode });
                 showLobbyScreen('participant');
             }
@@ -441,14 +438,18 @@
             });
         }
         
-        function updateBingoBoard(boardContainerId, board, completedAchievements, pendingAchievements = []) {
+        function updateBingoBoard(boardContainerId, lobbyState) {
             const boardContainer = document.getElementById(boardContainerId);
             boardContainer.innerHTML = '';
-            board.forEach(achievement => {
+            lobbyState.bingoBoard.forEach(achievement => {
                 const cell = createBingoCell(achievement);
-                const completed = completedAchievements.find(a => a.name === achievement.name);
-                const isPending = pendingAchievements.includes(achievement.name);
-
+                
+                // Find completed status from all participants
+                const completed = lobbyState.participants.map(p => p.completedAchievements).flat().find(a => a.name === achievement.name);
+                
+                // Find pending status from all participants
+                const isPending = lobbyState.participants.map(p => p.pendingReview).flat().includes(achievement.name);
+                
                 cell.classList.remove('bg-yellow-400', 'cell-pending', 'bg-red-500', 'cell-red', 'bg-blue-500', 'cell-blue');
                 if (completed) {
                     if (completed.team === 'red') {
@@ -462,15 +463,16 @@
                 
                 // Add event listener for selection to the main cell
                 cell.addEventListener('click', () => {
+                    // Check if the current user is a participant and the cell is not already claimed
                     if (isParticipant && !completed && !isPending) {
-                        const index = selectedAchievements.indexOf(achievement.name);
-                        if (index > -1) {
-                            selectedAchievements.splice(index, 1);
-                            cell.classList.remove('bg-yellow-400');
-                        } else {
-                            selectedAchievements.push(achievement.name);
-                            cell.classList.add('bg-yellow-400');
-                        }
+                         const index = localSelectedAchievements.indexOf(achievement.name);
+                         if (index > -1) {
+                             localSelectedAchievements.splice(index, 1);
+                             cell.classList.remove('bg-yellow-400');
+                         } else {
+                             localSelectedAchievements.push(achievement.name);
+                             cell.classList.add('bg-yellow-400');
+                         }
                     }
                 });
                 boardContainer.appendChild(cell);
