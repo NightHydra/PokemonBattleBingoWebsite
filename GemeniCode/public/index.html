@@ -112,13 +112,13 @@
         /* Updated styles for the info button */
         .info-btn {
             position: absolute;
-            top: 0.5rem; /* Use rem for consistent spacing */
-            right: 0.5rem; /* Use rem for consistent spacing */
+            top: 0.5em; /* Scale relative to font size */
+            right: 0.5em; /* Scale relative to font size */
             background-color: #6b7280;
             color: white;
             border-radius: 9999px;
-            width: 1.5rem; /* Fixed width */
-            height: 1.5rem; /* Fixed height */
+            width: 1.5em; /* Scale relative to font size */
+            height: 1.5em; /* Scale relative to font size */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -142,7 +142,6 @@
             text-align: center;
             word-wrap: break-word;
             overflow-wrap: break-word;
-            font-size: 1rem; /* Set a default font size */
         }
         .chat-container {
             height: 400px;
@@ -679,8 +678,13 @@
             boardContainer.innerHTML = '';
             boardContainer.style.gridTemplateColumns = `repeat(${boardSize}, minmax(0, 1fr))`;
 
+            // Calculate a responsive font size based on the board size
+            const baseFontSize = Math.max(0.8, 3.5 / boardSize);
+
             board.forEach(achievement => {
                 const cell = createBingoCell(achievement);
+                // Set the font size on the cell itself. All child elements using 'em' will scale with this.
+                cell.style.fontSize = `${baseFontSize}vmin`;
                 
                 const completed = completedAchievements.find(a => a.name === achievement.name);
                 const isPending = pendingAchievements.includes(achievement.name);
@@ -701,7 +705,13 @@
                     if (isPendingForReview) {
                         const completeBtn = document.createElement('button');
                         completeBtn.textContent = 'Mark Complete';
-                        completeBtn.className = 'mt-auto bg-green-500 text-white text-xs px-1 py-0.5 rounded';
+                        completeBtn.className = 'mt-auto bg-green-500 text-white font-bold rounded-md';
+                        // Apply responsive padding based on font size
+                        const paddingX = Math.max(0.3, 1.5 / boardSize);
+                        const paddingY = Math.max(0.15, 0.75 / boardSize);
+                        completeBtn.style.fontSize = `${baseFontSize * 0.8}vmin`;
+                        completeBtn.style.padding = `${paddingY}vmin ${paddingX}vmin`;
+
                         completeBtn.onclick = () => markAsCompleted(reviewUsername, achievement.name);
                         cell.appendChild(completeBtn);
                     }
