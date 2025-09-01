@@ -206,7 +206,14 @@ io.on('connection', (socket) => {
     
     socket.on('teamMessage', (data) => {
         const { roomCode, username, message, team } = data;
-        io.to(roomCode).emit('teamMessage', { username, message, team });
+        const lobby = lobbies[roomCode];
+        if (lobby) {
+            // Find all participants on the same team and send the message to them.
+            const teammates = lobby.participants.filter(p => p.team === team);
+            teammates.forEach(teammate => {
+                io.to(teammate.id).emit('teamMessage', { username, message, team });
+            });
+        }
     });
 
     socket.on('disconnect', () => {
