@@ -417,12 +417,15 @@
                 if (participant) {
                     document.getElementById('request-review-btn').style.display = 'block';
                     document.getElementById('my-team').textContent = participant.team.toUpperCase();
-                    // Participant's board shows all completed achievements, but only their own local selections
+                    
+                    // Combine server-side pending with client-side selected for display
+                    const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
+
                     updateBingoBoard(
                         'participant-bingo-board',
                         lobbyState.bingoBoard,
                         lobbyState.participants.flatMap(p => p.completedAchievements),
-                        localSelectedAchievements
+                        allPending
                     );
                 }
             } else { // Admin
@@ -532,17 +535,20 @@
                          const index = localSelectedAchievements.indexOf(achievement.name);
                          if (index > -1) {
                              localSelectedAchievements.splice(index, 1);
-                             cell.classList.remove('bg-yellow-400', 'cell-pending');
                          } else {
                              localSelectedAchievements.push(achievement.name);
-                             cell.classList.add('bg-yellow-400', 'cell-pending');
                          }
-                         updateBingoBoard(
-                            'participant-bingo-board', 
-                            globalLobbyState.bingoBoard,
-                            globalLobbyState.participants.flatMap(p => p.completedAchievements),
-                            localSelectedAchievements
-                        );
+                         // Re-render the board with the updated local selected achievements
+                         const participant = globalLobbyState.participants.find(p => p.username === currentUsername);
+                         if (participant) {
+                             const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
+                             updateBingoBoard(
+                                'participant-bingo-board',
+                                globalLobbyState.bingoBoard,
+                                globalLobbyState.participants.flatMap(p => p.completedAchievements),
+                                allPending
+                            );
+                         }
                     });
                 }
                 boardContainer.appendChild(cell);
