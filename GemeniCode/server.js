@@ -172,14 +172,14 @@ io.on('connection', (socket) => {
             // Remove from participant's local pending list
             participant.pendingReview = participant.pendingReview.filter(name => name !== achievementName);
 
-            // Remove from global pending requests list
-            lobby.pendingRequests = lobby.pendingRequests.filter(req => !(req.username === username && req.achievementName === achievementName));
-
             // Add to completed
             const existingAchievement = participant.completedAchievements.find(a => a.name === achievementName);
             if (!existingAchievement) {
                 participant.completedAchievements.push({ name: achievementName, team });
             }
+            
+            // Automatically clear all pending requests for this achievement from the global queue
+            lobby.pendingRequests = lobby.pendingRequests.filter(req => req.achievementName !== achievementName);
 
             io.to(roomCode).emit('lobbyUpdate', lobby);
         }
