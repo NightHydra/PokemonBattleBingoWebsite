@@ -1,239 +1,235 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const fs = require('fs');
 const { Server } = require("socket.io");
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const LOBBIES = {};
+const PORT = process.env.PORT || 3000;
 
-let ACHIEVEMENTS = [];
-
-// Attempt to read achievements from achievements.json
+// Load achievements from achievements.json
+let achievements = [];
 const achievementsFilePath = path.join(__dirname, 'achievements.json');
 try {
-    const fileContent = fs.readFileSync(achievementsFilePath, 'utf8');
-    const loadedAchievements = JSON.parse(fileContent);
-    if (Array.isArray(loadedAchievements) && loadedAchievements.length > 0) {
-        ACHIEVEMENTS = loadedAchievements;
-        console.log(`Successfully loaded ${ACHIEVEMENTS.length} achievements from achievements.json.`);
-    } else {
-        console.warn('achievements.json is empty or not a valid array. The application may not function correctly.');
-    }
+    const data = fs.readFileSync(achievementsFilePath, 'utf8');
+    achievements = JSON.parse(data);
+    console.log('Achievements loaded successfully.');
 } catch (error) {
-    console.error('Error reading achievements.json. The application will not function correctly without an achievements file.');
-    console.error(error);
+    console.error('Failed to load achievements.json:', error);
+    console.error('Using an empty array for achievements.');
 }
 
+const lobbies = {};
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Endpoint to serve the main HTML file
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// Endpoint to create a new lobby
+// API endpoint to create a new lobby
 app.post('/api/create-lobby', (req, res) => {
-    const boardSize = parseInt(req.body.boardSize, 10);
-    if (isNaN(boardSize) || boardSize < 3 || boardSize > 16) {
-        return res.status(400).json({ error: 'Invalid board size. Must be between 3 and 16.' });
-    }
+    const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const adminCode = Math.random().toString(36).substring(2, 12);
+    const boardSize = req.body.boardSize || 5;
 
-    const roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const adminCode = Math.random().toString(36).substring(2, 8);
-    const requiredAchievements = boardSize * boardSize;
+    // Shuffle achievements and select a subset for the board
+    const shuffledAchievements = [...achievements].sort(() => 0.5 - Math.random());
+    const bingoBoard = shuffledAchievements.slice(0, boardSize * boardSize);
 
-    if (ACHIEVEMENTS.length === 0) {
-        return res.status(500).json({ error: "No achievements found. Please ensure achievements.json is a valid file." });
-    }
-
-    if (ACHIEVEMENTS.length < requiredAchievements) {
-        return res.status(500).json({ error: `Not enough achievements to create a ${boardSize}x${boardSize} board. Please try a smaller size.` });
-    }
-
-    // Create a randomized bingo board
-    const bingoBoard = [...ACHIEVEMENTS]
-        .sort(() => 0.5 - Math.random())
-        .slice(0, requiredAchievements);
-
-    LOBBIES[roomCode] = {
-        adminCode,
-        boardSize,
-        bingoBoard,
-        participants: [],
+    lobbies[roomCode] = {
+        adminCode: adminCode,
+        boardSize: boardSize,
+        bingoBoard: bingoBoard,
         pendingParticipants: [],
-        pendingRequests: [],
-        chat: []
+        participants: [],
+        pendingRequests: []
     };
 
-    console.log(`Lobby created: ${roomCode} with admin code: ${adminCode} and board size ${boardSize}x${boardSize}`);
-    res.json({ roomCode, adminCode, boardSize });
+    console.log(`Lobby created: ${roomCode}`);
+    res.json({ roomCode, adminCode });
 });
 
-// Endpoint for participants to join a lobby
+// API endpoint for admin to join a lobby
 app.post('/api/join-lobby', (req, res) => {
-    const { roomCode, username, role, adminCode } = req.body;
-    const lobby = LOBBIES[roomCode];
+    const { roomCode, adminCode } = req.body;
+    const lobby = lobbies[roomCode];
 
     if (!lobby) {
         return res.status(404).json({ error: 'Lobby not found.' });
     }
-    
-    // Check if the user is a participant trying to join with a code
-    if (role === 'participant') {
-        return res.status(400).json({ error: 'Participants cannot join directly. They must request access.' });
+
+    if (lobby.adminCode !== adminCode) {
+        return res.status(401).json({ error: 'Invalid admin code.' });
     }
 
-    if (role === 'admin') {
-        if (adminCode !== lobby.adminCode) {
-            return res.status(401).json({ error: 'Invalid admin code.' });
-        }
-        console.log(`Admin joined lobby ${roomCode}`);
-        return res.json({ success: true, lobbyData: lobby, boardSize: lobby.boardSize });
-    }
-
-    res.status(400).json({ error: 'Invalid role or request.' });
+    res.json({ message: 'Admin login successful.' });
 });
 
-// Socket.IO for real-time communication
+// Socket.IO for real-time updates
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('A user connected:', socket.id);
 
     socket.on('joinRoom', ({ roomCode }) => {
-        socket.join(roomCode);
-        console.log(`User joined socket room: ${roomCode}`);
-        // Send initial state to the new user
-        const lobby = LOBBIES[roomCode];
+        const lobby = lobbies[roomCode];
         if (lobby) {
-            io.to(roomCode).emit('lobbyUpdate', lobby);
+            socket.join(roomCode);
+            socket.emit('lobbyUpdate', lobby);
+            console.log(`Socket ${socket.id} joined room ${roomCode}`);
         }
     });
 
     socket.on('requestJoin', ({ roomCode, username }) => {
-        const lobby = LOBBIES[roomCode];
+        const lobby = lobbies[roomCode];
         if (lobby) {
-            // Check if the username is already in active or pending lists
             const isUsernameTaken = lobby.participants.some(p => p.username === username) || lobby.pendingParticipants.some(p => p.username === username);
             if (isUsernameTaken) {
-                socket.emit('joinError', 'Username already exists or is pending approval.');
+                socket.emit('custom-alert', { title: 'Username Taken', message: 'That username is already in use in this lobby.' });
                 return;
             }
-            // Store username and socket.id in pending list
-            lobby.pendingParticipants.push({ username, socketId: socket.id });
+            lobby.pendingParticipants.push({ id: socket.id, username });
             io.to(roomCode).emit('lobbyUpdate', lobby);
+            console.log(`User ${username} requested to join room ${roomCode}`);
         }
     });
 
     socket.on('approveJoin', ({ roomCode, username, team }) => {
-        const lobby = LOBBIES[roomCode];
+        const lobby = lobbies[roomCode];
         if (lobby) {
-            // Find the pending participant's object and get their socketId
-            const pendingParticipant = lobby.pendingParticipants.find(p => p.username === username);
-            if (!pendingParticipant) return; // Participant not found in pending list
-
-            // Remove from pending list
-            lobby.pendingParticipants = lobby.pendingParticipants.filter(p => p.username !== username);
-            
-            // Add to active participants
-            lobby.participants.push({
-                username,
-                team,
-                pendingReview: [],
-                completedAchievements: []
-            });
-            
-            // Emit full lobby update to everyone
-            io.to(roomCode).emit('lobbyUpdate', lobby);
-            
-            // Emit specific approval event to only the approved participant
-            io.to(pendingParticipant.socketId).emit('participantApproved', { username });
-        }
-    });
-
-    socket.on('requestReview', ({ roomCode, username, achievements }) => {
-        const lobby = LOBBIES[roomCode];
-        const participant = lobby.participants.find(p => p.username === username);
-        if (lobby && participant) {
-            // Add to the participant's list for their own board's yellow squares
-            participant.pendingReview = [...new Set([...participant.pendingReview, ...achievements])];
-            
-            // Add individual requests to the global ordered list for the admin
-            achievements.forEach(achievementName => {
-                lobby.pendingRequests.push({ username, achievementName });
-            });
-            
-            io.to(roomCode).emit('lobbyUpdate', lobby);
-        }
-    });
-
-    socket.on('markComplete', ({ roomCode, username, achievementName, team }) => {
-        const lobby = LOBBIES[roomCode];
-        const participant = lobby.participants.find(p => p.username === username);
-        if (lobby && participant) {
-            
-            // Remove from participant's local pending list
-            participant.pendingReview = participant.pendingReview.filter(name => name !== achievementName);
-
-            // Add to completed
-            const existingAchievement = participant.completedAchievements.find(a => a.name === achievementName);
-            if (!existingAchievement) {
-                participant.completedAchievements.push({ name: achievementName, team });
+            const pendingUserIndex = lobby.pendingParticipants.findIndex(p => p.username === username);
+            if (pendingUserIndex !== -1) {
+                const pendingUser = lobby.pendingParticipants.splice(pendingUserIndex, 1)[0];
+                const newParticipant = {
+                    id: pendingUser.id,
+                    username,
+                    team,
+                    completedAchievements: [],
+                    pendingReview: []
+                };
+                lobby.participants.push(newParticipant);
+                // Tell the specific user they have been approved
+                io.to(pendingUser.id).emit('participantApproved', { username });
+                io.to(roomCode).emit('lobbyUpdate', lobby);
+                console.log(`User ${username} approved for room ${roomCode} on team ${team}`);
             }
-            
-            // Automatically clear all pending requests for this achievement from the global queue
-            lobby.pendingRequests = lobby.pendingRequests.filter(req => req.achievementName !== achievementName);
+        }
+    });
+    
+    socket.on('requestReview', ({ roomCode, username, achievements }) => {
+        const lobby = lobbies[roomCode];
+        if (lobby) {
+            const participant = lobby.participants.find(p => p.username === username);
+            if (participant) {
+                achievements.forEach(achName => {
+                    if (!participant.pendingReview.includes(achName)) {
+                        participant.pendingReview.push(achName);
+                    }
+                });
+                
+                // Add to admin's pending requests
+                achievements.forEach(achName => {
+                    const existingRequest = lobby.pendingRequests.find(req => req.username === username && req.achievementName === achName);
+                    if (!existingRequest) {
+                         lobby.pendingRequests.push({ username, achievementName: achName });
+                    }
+                });
 
-            io.to(roomCode).emit('lobbyUpdate', lobby);
+                io.to(roomCode).emit('lobbyUpdate', lobby);
+                console.log(`Review requested by ${username} in room ${roomCode} for: ${achievements.join(', ')}`);
+            }
+        }
+    });
+    
+    socket.on('markComplete', ({ roomCode, username, achievementName, team }) => {
+        const lobby = lobbies[roomCode];
+        if (lobby) {
+            const participant = lobby.participants.find(p => p.username === username);
+            if (participant) {
+                // Check if the achievement is a pending review for the user
+                const pendingIndex = participant.pendingReview.indexOf(achievementName);
+                if (pendingIndex > -1) {
+                    participant.pendingReview.splice(pendingIndex, 1);
+                }
+
+                // Add to the participant's completed list
+                participant.completedAchievements.push({ name: achievementName, team });
+            
+                // Remove from the admin's pending requests
+                const requestIndex = lobby.pendingRequests.findIndex(req => req.username === username && req.achievementName === achievementName);
+                if (requestIndex > -1) {
+                    lobby.pendingRequests.splice(requestIndex, 1);
+                }
+
+                io.to(roomCode).emit('lobbyUpdate', lobby);
+                console.log(`Achievement '${achievementName}' marked complete for ${username} in room ${roomCode}`);
+            }
         }
     });
 
     socket.on('dismissReview', ({ roomCode, username, achievementName }) => {
-        const lobby = LOBBIES[roomCode];
-        const participant = lobby.participants.find(p => p.username === username);
+        const lobby = lobbies[roomCode];
+        if (lobby) {
+             const participant = lobby.participants.find(p => p.username === username);
+             if (participant) {
+                const pendingIndex = participant.pendingReview.indexOf(achievementName);
+                if (pendingIndex > -1) {
+                    participant.pendingReview.splice(pendingIndex, 1);
+                }
+             }
 
-        if (lobby && participant) {
-            // Remove the achievement from the participant's pending list
-            participant.pendingReview = participant.pendingReview.filter(name => name !== achievementName);
+            const requestIndex = lobby.pendingRequests.findIndex(req => req.username === username && req.achievementName === achievementName);
+            if (requestIndex > -1) {
+                lobby.pendingRequests.splice(requestIndex, 1);
+            }
 
-            // Remove the specific request from the global pending requests queue
-            lobby.pendingRequests = lobby.pendingRequests.filter(req => !(req.username === username && req.achievementName === achievementName));
-            
-            // Send the updated lobby state to all connected clients
             io.to(roomCode).emit('lobbyUpdate', lobby);
+            console.log(`Review request for '${achievementName}' dismissed for ${username} in room ${roomCode}`);
         }
     });
     
     socket.on('manualChange', ({ roomCode, achievementName, newTeam }) => {
-        const lobby = LOBBIES[roomCode];
+        const lobby = lobbies[roomCode];
         if (lobby) {
-            // Clear any pending requests for this achievement first
-            lobby.pendingRequests = lobby.pendingRequests.filter(req => req.achievementName !== achievementName);
-            
-            // Iterate through all participants and update their completed achievements
-            lobby.participants.forEach(participant => {
-                // Remove the achievement if it's already there with a different team
-                participant.completedAchievements = participant.completedAchievements.filter(a => a.name !== achievementName);
+            const existingAchIndex = lobby.bingoBoard.findIndex(ach => ach.name === achievementName);
+            if (existingAchIndex !== -1) {
+                const existingAch = lobby.bingoBoard[existingAchIndex];
                 
-                // Add the new completed achievement if a new team is specified
                 if (newTeam) {
-                    participant.completedAchievements.push({ name: achievementName, team: newTeam });
+                    existingAch.team = newTeam;
+                } else {
+                    delete existingAch.team;
                 }
-            });
+            }
             io.to(roomCode).emit('lobbyUpdate', lobby);
         }
     });
+    
+    socket.on('teamMessage', (data) => {
+        const { roomCode, username, message, team } = data;
+        io.to(roomCode).emit('teamMessage', { username, message, team });
+    });
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log('User disconnected:', socket.id);
+        for (const roomCode in lobbies) {
+            const lobby = lobbies[roomCode];
+            const participantIndex = lobby.participants.findIndex(p => p.id === socket.id);
+            if (participantIndex !== -1) {
+                lobby.participants.splice(participantIndex, 1);
+                io.to(roomCode).emit('lobbyUpdate', lobby);
+                console.log(`Participant with ID ${socket.id} left room ${roomCode}`);
+            } else {
+                const pendingIndex = lobby.pendingParticipants.findIndex(p => p.id === socket.id);
+                if (pendingIndex !== -1) {
+                    lobby.pendingParticipants.splice(pendingIndex, 1);
+                    io.to(roomCode).emit('lobbyUpdate', lobby);
+                    console.log(`Pending user with ID ${socket.id} left room ${roomCode}`);
+                }
+            }
+        }
     });
 });
 
-const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

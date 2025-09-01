@@ -138,6 +138,22 @@
             justify-content: center;
             text-align: center;
         }
+        .chat-container {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: #f9fafb;
+            margin-bottom: 0.5rem;
+        }
+        .chat-input-container {
+            display: flex;
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -235,6 +251,7 @@
         let currentRoomCode = '';
         let currentAdminCode = '';
         let currentUsername = '';
+        let currentTeam = '';
         let isParticipant = false;
         let localSelectedAchievements = [];
         let globalLobbyState = null;
@@ -273,12 +290,24 @@
             if (isParticipant) {
                 lobbyContent.innerHTML = `
                     <p class="text-xl font-bold text-center mb-4">Your Team: <span id="my-team"></span></p>
-                    <div class="max-w-4xl mx-auto">
-                        <div id="participant-bingo-board" class="bingo-grid"></div>
+                    <div class="flex space-x-4 justify-center mb-4">
+                        <button id="board-tab-btn" class="bg-gray-300 py-2 px-4 rounded-md font-bold" onclick="showParticipantTab('board')">Bingo Board</button>
+                        <button id="chat-tab-btn" class="bg-gray-300 py-2 px-4 rounded-md font-bold" onclick="showParticipantTab('chat')">Team Chat</button>
                     </div>
-                    <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" style="display: none;" onclick="requestReview()">Request Review</button>
+                    <div id="participant-board-container" class="max-w-4xl mx-auto">
+                        <div id="participant-bingo-board" class="bingo-grid"></div>
+                        <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" style="display: none;" onclick="requestReview()">Request Review</button>
+                    </div>
+                    <div id="participant-chat-container" class="chat-container hidden">
+                        <div id="chat-messages" class="chat-messages rounded-md shadow"></div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-input" class="flex-grow p-3 border rounded-md mr-2" placeholder="Type a message...">
+                            <button id="chat-send-btn" class="btn-primary py-2 px-4 rounded-md font-bold" onclick="sendTeamMessage()">Send</button>
+                        </div>
+                    </div>
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
+                showParticipantTab('board');
             } else { // Admin
                 lobbyContent.innerHTML = `
                     <div class="flex justify-between items-center mb-4">
@@ -310,6 +339,26 @@
                 `;
             }
             showScreen('lobby-screen');
+        }
+
+        window.showParticipantTab = function(tab) {
+            document.getElementById('participant-board-container').classList.add('hidden');
+            document.getElementById('participant-chat-container').classList.add('hidden');
+            
+            document.getElementById('board-tab-btn').classList.remove('bg-indigo-600', 'text-white');
+            document.getElementById('board-tab-btn').classList.add('bg-gray-300');
+            document.getElementById('chat-tab-btn').classList.remove('bg-indigo-600', 'text-white');
+            document.getElementById('chat-tab-btn').classList.add('bg-gray-300');
+            
+            if (tab === 'board') {
+                document.getElementById('participant-board-container').classList.remove('hidden');
+                document.getElementById('board-tab-btn').classList.remove('bg-gray-300');
+                document.getElementById('board-tab-btn').classList.add('bg-indigo-600', 'text-white');
+            } else {
+                document.getElementById('participant-chat-container').classList.remove('hidden');
+                document.getElementById('chat-tab-btn').classList.remove('bg-gray-300');
+                document.getElementById('chat-tab-btn').classList.add('bg-indigo-600', 'text-white');
+            }
         }
 
         window.showModal = function(modalId, title = '', message = '') {
@@ -481,6 +530,20 @@
                 team
             });
         }
+
+        window.sendTeamMessage = function() {
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value.trim();
+            if (message && currentRoomCode && currentUsername && currentTeam) {
+                socket.emit('teamMessage', {
+                    roomCode: currentRoomCode,
+                    username: currentUsername,
+                    message,
+                    team: currentTeam
+                });
+                chatInput.value = '';
+            }
+        };
         
         socket.on('lobbyUpdate', (lobbyState) => {
             globalLobbyState = lobbyState;
@@ -501,8 +564,8 @@
             if (isParticipant) {
                 const participant = lobbyState.participants.find(p => p.username === currentUsername);
                 if (participant) {
-                    document.getElementById('request-review-btn').style.display = 'block';
-                    document.getElementById('my-team').textContent = participant.team.toUpperCase();
+                    currentTeam = participant.team;
+                    document.getElementById('my-team').textContent = currentTeam.toUpperCase();
                     
                     const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
 
@@ -524,6 +587,14 @@
             }
         });
         
+        socket.on('teamMessage', (data) => {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the bottom
+        });
+
         function updateAdminDashboard(lobbyState) {
             const pendingList = document.getElementById('pending-participants-list');
             const redTeamList = document.getElementById('red-team-list');
