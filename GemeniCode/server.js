@@ -213,6 +213,26 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
+const os = require('os');
+
+// Listen on port 0 to get a random available port
+const listener = server.listen(0, () => {
+    const port = listener.address().port;
+    
+    // Find the actual IP address (IPv4) of your machine
+    const networkInterfaces = os.networkInterfaces();
+    let ipAddress = '127.0.0.1'; // Fallback
+
+    for (const interfaceName in networkInterfaces) {
+        for (const iface of networkInterfaces[interfaceName]) {
+            // Skip internal (loopback) and non-IPv4 addresses
+            if (iface.family === 'IPv4' && !iface.internal) {
+                ipAddress = iface.address;
+                break;
+            }
+        }
+    }
+
+    console.log(`Server is running on http://${ipAddress}:${port}`);
+    console.log(`Also available at http://localhost:${port}`);
 });
