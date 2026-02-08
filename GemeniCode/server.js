@@ -34,9 +34,7 @@ try {
 
 function generateBingoBoard(size) {
     const shuffled = [...achievements].sort(() => 0.5 - Math.random());
-    
     const selected = shuffled.slice(0, size * size);
-    // Refactored to return an object instead of an array
     return selected.reduce((board, achievement) => {
         board[achievement.name] = {
             ...achievement,
@@ -45,6 +43,26 @@ function generateBingoBoard(size) {
         return board;
     }, {});
 }
+
+// RESTORE LOBBY ENDPOINT
+app.post('/api/restore-lobby', (req, res) => {
+    const { saveData } = req.body;
+    if (!saveData || !saveData.roomCode || !saveData.adminCode) {
+        return res.status(400).json({ error: 'Invalid save data.' });
+    }
+
+    const roomCode = saveData.roomCode;
+    // Wipe ephemeral connection data before restoring
+    lobbies[roomCode] = {
+        ...saveData,
+        participants: saveData.participants.map(p => ({ ...p, socketId: null })),
+        pendingParticipants: [],
+        pendingRequests: saveData.pendingRequests || []
+    };
+
+    console.log(`Lobby restored from file: ${roomCode}`);
+    res.json({ roomCode: lobbies[roomCode].roomCode, adminCode: lobbies[roomCode].adminCode });
+});
 
 app.post('/api/create-lobby', (req, res) => {
     const { boardSize } = req.body;
@@ -86,10 +104,17 @@ app.post('/api/join-lobby', (req, res) => {
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
-    socket.on('joinRoom', ({ roomCode }) => {
+    socket.on('joinRoom', ({ roomCode, username }) => {
         const lobby = lobbies[roomCode];
         if (lobby) {
             socket.join(roomCode);
+            
+            // If this is a restoring user, re-link their socketId
+            if (username) {
+                const participant = lobby.participants.find(p => p.username === username);
+                if (participant) participant.socketId = socket.id;
+            }
+
             console.log(`${socket.id} joined room ${roomCode}`);
             io.to(roomCode).emit('lobbyUpdate', lobby);
         }
@@ -126,9 +151,10 @@ io.on('connection', (socket) => {
             const participant = lobby.participants.find(p => p.username === username);
             if (participant) {
                 participant.pendingReview = achievements;
-                lobby.pendingRequests = lobby.pendingRequests.filter(req => req.username !== username || req.achievementName !== achievementName);
                 achievements.forEach(achievementName => {
-                    lobby.pendingRequests.push({ username, achievementName });
+                    // Prevent duplicate entries in the admin list
+                    const exists = lobby.pendingRequests.some(r => r.username === username && r.achievementName === achievementName);
+                    if (!exists) lobby.pendingRequests.push({ username, achievementName });
                 });
                 console.log(`${username} requested review for: ${achievements.join(', ')}`);
                 io.to(roomCode).emit('lobbyUpdate', lobby);
@@ -142,15 +168,11 @@ io.on('connection', (socket) => {
             const participant = lobby.participants.find(p => p.username === username);
             if (!participant) return;
 
-            // Direct access to the achievement object
             const achievement = lobby.bingoBoard[achievementName];
             if (achievement) {
                 achievement.team = participant.team;
-                
                 participant.pendingReview = participant.pendingReview.filter(a => a !== achievementName);
-                
                 lobby.pendingRequests = lobby.pendingRequests.filter(req => req.username !== username || req.achievementName !== achievementName);
-
                 console.log(`Achievement '${achievementName}' marked for team ${participant.team} by ${username}`);
                 io.to(roomCode).emit('lobbyUpdate', lobby);
             }
@@ -172,7 +194,6 @@ io.on('connection', (socket) => {
     socket.on('manualChange', ({ roomCode, achievementName, newTeam }) => {
         const lobby = lobbies[roomCode];
         if (lobby) {
-            // Direct access to the achievement object
             const achievement = lobby.bingoBoard[achievementName];
             if (achievement) {
                 achievement.team = newTeam;
@@ -188,9 +209,8 @@ io.on('connection', (socket) => {
             if (participant) {
                 const team = participant.team;
                 const teamMembers = lobby.participants.filter(p => p.team === team);
-                
                 teamMembers.forEach(member => {
-                    io.to(member.socketId).emit('chatMessage', { username: participant.username, message });
+                    if (member.socketId) io.to(member.socketId).emit('chatMessage', { username: participant.username, message });
                 });
             }
         }
@@ -198,14 +218,20 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);
-        // Find and remove the disconnected user from all lobbies
         for (const roomCode in lobbies) {
             const lobby = lobbies[roomCode];
-            lobby.participants = lobby.participants.filter(p => p.socketId !== socket.id);
-            lobby.pendingParticipants = lobby.pendingParticipants.filter(p => p.socketId !== p.socketId);
-            if (lobby.participants.length === 0 && lobby.pendingParticipants.length === 0) {
-                delete lobbies[roomCode];
-                console.log(`Lobby ${roomCode} disbanded.`);
+            // Instead of deleting immediately, we just clear the socket link
+            const p = lobby.participants.find(p => p.socketId === socket.id);
+            if (p) p.socketId = null;
+            
+            lobby.pendingParticipants = lobby.pendingParticipants.filter(p => p.socketId !== socket.id);
+            
+            // Optional: Only delete if no one has been in the room for a long time
+            // For now, keeping your existing cleanup logic but adapted for "Save/Load" reliability
+            const activeParticipants = lobby.participants.filter(p => p.socketId !== null);
+            if (activeParticipants.length === 0 && lobby.pendingParticipants.length === 0) {
+                 // In a production app, you might want a timeout here before deletion
+                 // delete lobbies[roomCode];
             } else {
                 io.to(roomCode).emit('lobbyUpdate', lobby);
             }
@@ -214,25 +240,23 @@ io.on('connection', (socket) => {
 });
 
 const os = require('os');
-
-// Listen on port 0 to get a random available port
 const listener = server.listen(0, () => {
     const port = listener.address().port;
-    
-    // Find the actual IP address (IPv4) of your machine
     const networkInterfaces = os.networkInterfaces();
-    let ipAddress = '127.0.0.1'; // Fallback
-
+    let ipAddress = '127.0.0.1';
     for (const interfaceName in networkInterfaces) {
         for (const iface of networkInterfaces[interfaceName]) {
-            // Skip internal (loopback) and non-IPv4 addresses
+            if (name.toLowerCase().includes('vbox') || 
+                name.toLowerCase().includes('virtual') || 
+                name.toLowerCase().includes('vethernet') || 
+                name.toLowerCase().includes('wsl')) {
+                continue;
+            }
             if (iface.family === 'IPv4' && !iface.internal) {
                 ipAddress = iface.address;
                 break;
             }
         }
     }
-
     console.log(`Server is running on http://${ipAddress}:${port}`);
-    console.log(`Also available at http://localhost:${port}`);
 });

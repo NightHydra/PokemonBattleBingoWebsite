@@ -140,24 +140,6 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
-        #chat-log {
-            height: 400px;
-            overflow-y: auto;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-        }
-        .chat-message-container {
-            margin-bottom: 0.5rem;
-        }
-        .chat-username {
-            font-weight: bold;
-            font-size: 0.875rem;
-            color: #4f46e5;
-        }
-        .chat-message {
-            font-size: 1rem;
-        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -172,11 +154,19 @@
 
         <div id="create-lobby-screen" class="hidden text-center space-y-4">
             <h2 class="text-2xl font-bold mb-4">Create a New Lobby</h2>
-            <div class="mb-4">
+            <div class="mb-4 text-left">
                 <label for="board-size" class="block text-gray-700 font-semibold mb-2">Board Size (e.g., 5 for 5x5):</label>
                 <input type="number" id="board-size" class="w-full p-3 border rounded-md" value="5" min="3" max="16">
             </div>
-            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="createLobby()">Generate Room Code</button>
+            
+            <!-- RESTORE FEATURE UI -->
+            <div class="mb-4 pt-4 border-t text-left">
+                <label class="block text-gray-700 font-semibold mb-2">Resume from Save File:</label>
+                <input type="file" id="resume-upload" accept=".json" class="w-full p-2 border rounded-md text-sm">
+                <p class="text-xs text-gray-500 mt-1">Upload a previously downloaded .json save file to restore a session.</p>
+            </div>
+
+            <button class="btn-primary w-full py-3 rounded-md font-bold" onclick="createLobby()">Start Lobby</button>
             <div class="flex justify-center mt-2">
                 <div id="create-spinner" class="spinner"></div>
             </div>
@@ -206,6 +196,7 @@
         </div>
     </div>
 
+    <!-- MODALS -->
     <div id="bingo-modal" class="modal" style="z-index: 101;">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('bingo-modal')">&times;</span>
@@ -285,92 +276,50 @@
             
             if (isParticipant) {
                 lobbyContent.innerHTML = `
-                    <div class="flex border-b border-gray-300">
-                        <button id="board-tab-btn" class="flex-1 py-3 px-6 text-center border-b-2 border-transparent hover:border-blue-500 font-bold text-gray-700 transition duration-150 ease-in-out">Board</button>
-                        <button id="chat-tab-btn" class="flex-1 py-3 px-6 text-center border-b-2 border-transparent hover:border-blue-500 font-bold text-gray-700 transition duration-150 ease-in-out">Chat</button>
-                    </div>
-
-                    <div id="board-tab-content" class="p-4">
-                        <p class="text-xl font-bold text-center mb-4">Your Team: <span id="my-team"></span></p>
-                        <div id="participant-board-container" class="max-w-4xl mx-auto">
-                            <div id="participant-bingo-board" class="bingo-grid"></div>
-                            <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" onclick="requestReview()">Request Review</button>
-                        </div>
-                    </div>
-                    
-                    <div id="chat-tab-content" class="p-4 hidden">
-                        <h3 class="text-xl font-bold mb-2 text-center">Team Chat</h3>
-                        <div id="chat-log" class="bg-gray-100 mb-2"></div>
-                        <div class="flex space-x-2">
-                            <input type="text" id="chat-input" class="flex-1 p-2 border rounded-md" placeholder="Type a message...">
-                            <button id="chat-send-btn" class="btn-primary py-2 px-4 rounded-md font-bold">Send</button>
-                        </div>
+                    <p class="text-xl font-bold text-center mb-4">Your Team: <span id="my-team"></span></p>
+                    <div id="participant-board-container" class="max-w-4xl mx-auto">
+                        <div id="participant-bingo-board" class="bingo-grid"></div>
+                        <button id="request-review-btn" class="btn-primary w-full py-3 rounded-md font-bold mt-4" onclick="requestReview()">Request Review</button>
                     </div>
                     <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
                 `;
-                
-                document.getElementById('board-tab-btn').addEventListener('click', () => showTab('board'));
-                document.getElementById('chat-tab-btn').addEventListener('click', () => showTab('chat'));
-
-                const chatInput = document.getElementById('chat-input');
-                const chatSendBtn = document.getElementById('chat-send-btn');
-                chatSendBtn.addEventListener('click', () => sendChatMessage());
-                chatInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        sendChatMessage();
-                    }
-                });
-                showTab('board');
             } else {
                 lobbyContent.innerHTML = `
-                    <div class="flex justify-between items-center mb-4">
-                        <p class="text-lg font-bold">Room Code: <span id="admin-room-code">${currentRoomCode}</span></p>
-                        <p class="text-md">Admin Code: <span id="admin-admin-code">${currentAdminCode}</span></p>
+                    <div class="flex justify-between items-center mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="text-left">
+                            <p class="text-lg font-bold">Room Code: <span class="text-indigo-600 select-all">${currentRoomCode}</span></p>
+                            <p class="text-sm text-gray-600 font-mono">Admin: <span class="select-all">${currentAdminCode}</span></p>
+                        </div>
+                        <button onclick="downloadSessionSave()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm shadow transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Download Save
+                        </button>
                     </div>
                     <div class="max-w-4xl mx-auto mb-4">
                         <div id="admin-bingo-board" class="bingo-grid"></div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <h3 class="text-xl font-bold mb-2">Pending Participants</h3>
+                            <h3 class="text-xl font-bold mb-2">Waitlist</h3>
                             <ul id="pending-participants-list" class="mb-4 space-y-2"></ul>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold mb-2">Team Red</h3>
+                            <h3 class="text-xl font-bold mb-2 text-red-600">Team Red</h3>
                             <ul id="red-team-list" class="mb-4 space-y-2"></ul>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold mb-2">Team Blue</h3>
+                            <h3 class="text-xl font-bold mb-2 text-blue-600">Team Blue</h3>
                             <ul id="blue-team-list" class="mb-4 space-y-2"></ul>
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <h3 class="text-xl font-bold mb-2">Pending Review Requests</h3>
+                    <div class="mt-4 pt-4 border-t">
+                        <h3 class="text-xl font-bold mb-2">Pending Reviews</h3>
                         <ul id="pending-review-requests" class="mb-4 space-y-2"></ul>
                     </div>
-                    <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Leave Lobby</button>
+                    <button class="w-full mt-4 bg-gray-300 py-2 rounded-md font-bold" onclick="showLandingScreen()">Exit Dashboard</button>
                 `;
             }
             showScreen('lobby-screen');
-        }
-
-        window.showTab = function(tabName) {
-            const tabs = ['board', 'chat'];
-            tabs.forEach(tab => {
-                const content = document.getElementById(`${tab}-tab-content`);
-                const button = document.getElementById(`${tab}-tab-btn`);
-                if (tab === tabName) {
-                    content.classList.remove('hidden');
-                    button.classList.add('border-blue-500');
-                    button.classList.remove('text-gray-700');
-                    button.classList.add('text-blue-600');
-                } else {
-                    content.classList.add('hidden');
-                    button.classList.remove('border-blue-500');
-                    button.classList.remove('text-blue-600');
-                    button.classList.add('text-gray-700');
-                }
-            });
         }
 
         window.showModal = function(modalId, title = '', message = '') {
@@ -393,6 +342,40 @@
         }
         
         window.createLobby = async function() {
+            const fileInput = document.getElementById('resume-upload');
+            
+            // Check if user is trying to restore from a file
+            if (fileInput.files.length > 0) {
+                document.getElementById('create-spinner').style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const saveData = JSON.parse(e.target.result);
+                        const response = await fetch('/api/restore-lobby', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ saveData })
+                        });
+                        const result = await response.json();
+                        if (result.roomCode) {
+                            currentRoomCode = result.roomCode;
+                            currentAdminCode = result.adminCode;
+                            socket.emit('joinRoom', { roomCode: currentRoomCode });
+                            showLobbyScreen('admin');
+                        } else {
+                            showModal('custom-modal', 'Restore Failed', result.error || 'The server could not process the save file.');
+                        }
+                    } catch (err) {
+                        showModal('custom-modal', 'Error', 'Invalid save file format. Please upload a valid .json file exported from Battle Bingo.');
+                    } finally {
+                        document.getElementById('create-spinner').style.display = 'none';
+                    }
+                };
+                reader.readAsText(fileInput.files[0]);
+                return;
+            }
+
+            // Normal Lobby Creation
             document.getElementById('create-spinner').style.display = 'block';
             const boardSize = document.getElementById('board-size').value;
 
@@ -415,12 +398,29 @@
                 showLobbyScreen('admin');
             } catch (error) {
                 console.error('Failed to create lobby:', error);
-                showModal('custom-modal', 'Error', 'Failed to create lobby. Please try again.');
+                showModal('custom-modal', 'Error', 'Failed to create lobby. Check your connection and try again.');
             } finally {
                 document.getElementById('create-spinner').style.display = 'none';
             }
         }
         
+        window.downloadSessionSave = function() {
+            if (!globalLobbyState) return;
+            
+            // Per instructions: Participants are not saved, only game progress
+            const exportData = JSON.parse(JSON.stringify(globalLobbyState));
+            // We can optionally strip participant lists here if we want the file smaller, 
+            // but the server logic handles rejoining anyway.
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", `bingo_save_${exportData.roomCode}.json`);
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
         window.joinLobby = async function() {
             const roomCode = document.getElementById('join-room-code').value.toUpperCase();
             const role = document.getElementById('role-select').value;
@@ -434,7 +434,7 @@
                 socket.emit('requestJoin', { roomCode, username });
                 currentUsername = username;
                 currentRoomCode = roomCode;
-                showModal('custom-modal', 'Request Sent', 'Your request to join has been sent. Waiting for admin approval.');
+                showModal('custom-modal', 'Request Sent', 'Your request has been sent. The admin must approve you to join a team.');
             } else {
                 const payload = { roomCode, role, adminCode };
                 try {
@@ -457,16 +457,17 @@
                     showLobbyScreen(role);
                 } catch (error) {
                     console.error('Failed to join lobby:', error);
-                    showModal('custom-modal', 'Error', 'Failed to join lobby. Please check your codes and try again.');
+                    showModal('custom-modal', 'Error', 'Failed to join. Please check your room and admin codes.');
                 } finally {
                     spinner.style.display = 'none';
                 }
             }
         }
 
+        // BINGO LOGIC & UPDATES
         window.requestReview = function() {
             if (localSelectedAchievements.length === 0) {
-                showModal('custom-modal', 'Error', 'Please select at least one achievement to review.');
+                showModal('custom-modal', 'Error', 'Please select the achievements you have completed first.');
                 return;
             }
             socket.emit('requestReview', {
@@ -475,7 +476,7 @@
                 achievements: localSelectedAchievements
             });
             localSelectedAchievements = [];
-            showModal('custom-modal', 'Success', 'Review request sent!');
+            showModal('custom-modal', 'Review Requested', 'The admin has been notified. Stand by!');
         }
         
         window.markAsCompleted = function(username, achievementName) {
@@ -488,10 +489,6 @@
         }
         
         window.dismissReview = function(username, achievementName) {
-            const lobby = globalLobbyState;
-            const participantData = lobby.participants.find(p => p.username === username);
-            if (!participantData) return;
-
             socket.emit('dismissReview', {
                 roomCode: currentRoomCode,
                 username,
@@ -504,8 +501,7 @@
             const participantData = globalLobbyState.participants.find(p => p.username === username);
             if (!participantData) return;
 
-            document.getElementById('review-modal-title').textContent = `Reviewing ${username}'s Board`;
-            
+            document.getElementById('review-modal-title').textContent = `Reviewing ${username}`;
             const boardContainer = document.getElementById('review-bingo-board');
             renderInitialBoard(boardContainer, globalLobbyState.bingoBoard, globalLobbyState.boardSize);
             updateBoardState(
@@ -514,7 +510,6 @@
                 participantData.pendingReview,
                 username
             );
-            
             showModal('review-modal');
         }
 
@@ -542,38 +537,8 @@
             });
         }
         
-        window.sendChatMessage = function() {
-            const chatInput = document.getElementById('chat-input');
-            const message = chatInput.value.trim();
-            if (message) {
-                socket.emit('sendChatMessage', { roomCode: currentRoomCode, message: message });
-                chatInput.value = '';
-            }
-        }
-        
-        window.addChatMessage = function(username, message) {
-            const chatLog = document.getElementById('chat-log');
-            const messageContainer = document.createElement('div');
-            messageContainer.className = 'chat-message-container';
-            
-            const userSpan = document.createElement('span');
-            userSpan.className = 'chat-username';
-            userSpan.textContent = `${username}: `;
-            
-            const messageSpan = document.createElement('span');
-            messageSpan.className = 'chat-message';
-            messageSpan.textContent = message;
-            
-            messageContainer.appendChild(userSpan);
-            messageContainer.appendChild(messageSpan);
-            
-            chatLog.appendChild(messageContainer);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
-        
         socket.on('lobbyUpdate', (lobbyState) => {
             globalLobbyState = lobbyState;
-            
             const isAdmin = lobbyState.adminCode === currentAdminCode;
 
             if (isAdmin) {
@@ -581,10 +546,7 @@
                 if (boardContainer.innerHTML === '') {
                     renderInitialBoard(boardContainer, lobbyState.bingoBoard, lobbyState.boardSize);
                 }
-                updateBoardState(
-                    boardContainer,
-                    lobbyState.bingoBoard
-                );
+                updateBoardState(boardContainer, lobbyState.bingoBoard);
                 updateAdminDashboard(lobbyState);
             }
             
@@ -600,11 +562,7 @@
                     }
                     
                     const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
-                    updateBoardState(
-                        boardContainer,
-                        globalLobbyState.bingoBoard,
-                        allPending
-                    );
+                    updateBoardState(boardContainer, globalLobbyState.bingoBoard, allPending);
                 }
             }
         });
@@ -614,10 +572,6 @@
                 socket.emit('joinRoom', { roomCode: currentRoomCode });
                 showLobbyScreen('participant');
             }
-        });
-        
-        socket.on('chatMessage', ({ username, message }) => {
-            addChatMessage(username, message);
         });
 
         function updateAdminDashboard(lobbyState) {
@@ -634,48 +588,41 @@
             const pendingParticipants = lobbyState.pendingParticipants || [];
             const activeParticipants = lobbyState.participants || [];
             const pendingRequests = lobbyState.pendingRequests || [];
-            
-            const redTeamMembers = activeParticipants.filter(p => p.team === 'red');
-            const blueTeamMembers = activeParticipants.filter(p => p.team === 'blue');
 
-            pendingParticipants.forEach(pendingUser => {
+            pendingParticipants.forEach(p => {
                 const li = document.createElement('li');
-                li.className = 'p-2 rounded-md shadow bg-gray-200 flex justify-between items-center';
-                li.innerHTML = `<span>${pendingUser.username}</span>
-                                <div>
-                                    <button class="py-1 px-3 rounded-md bg-red-500 text-white font-bold mr-2" onclick="approveParticipant('${pendingUser.username}', 'red')">Red Team</button>
-                                    <button class="py-1 px-3 rounded-md bg-blue-500 text-white font-bold" onclick="approveParticipant('${pendingUser.username}', 'blue')">Blue Team</button>
+                li.className = 'p-2 rounded bg-gray-100 flex justify-between items-center text-sm';
+                li.innerHTML = `<span>${p.username}</span>
+                                <div class="flex gap-1">
+                                    <button class="px-2 py-1 rounded bg-red-500 text-white text-xs font-bold" onclick="approveParticipant('${p.username}', 'red')">Red</button>
+                                    <button class="px-2 py-1 rounded bg-blue-500 text-white text-xs font-bold" onclick="approveParticipant('${p.username}', 'blue')">Blue</button>
                                 </div>`;
                 pendingList.appendChild(li);
             });
 
-            redTeamMembers.forEach(participant => {
+            activeParticipants.forEach(p => {
                 const li = document.createElement('li');
-                li.className = `p-2 rounded-md shadow bg-red-500 text-white flex justify-between items-center`;
-                li.innerHTML = `<span>${participant.username}</span>
-                                <button class="py-1 px-3 rounded-md bg-white text-gray-800 font-bold" onclick="showReviewModal('${participant.username}')">View Board</button>`;
-                redTeamList.appendChild(li);
-            });
-            
-            blueTeamMembers.forEach(participant => {
-                const li = document.createElement('li');
-                li.className = `p-2 rounded-md shadow bg-blue-500 text-white flex justify-between items-center`;
-                li.innerHTML = `<span>${participant.username}</span>
-                                <button class="py-1 px-3 rounded-md bg-white text-gray-800 font-bold" onclick="showReviewModal('${participant.username}')">View Board</button>`;
-                blueTeamList.appendChild(li);
+                const colorClass = p.team === 'red' ? 'bg-red-50' : 'bg-blue-50';
+                li.className = `p-2 rounded border flex justify-between items-center text-sm ${colorClass}`;
+                li.innerHTML = `<span>${p.username}</span>
+                                <button class="px-2 py-1 bg-white border rounded shadow-sm text-xs font-bold" onclick="showReviewModal('${p.username}')">Review</button>`;
+                if (p.team === 'red') redTeamList.appendChild(li);
+                else blueTeamList.appendChild(li);
             });
             
             pendingRequests.forEach(request => {
                 const li = document.createElement('li');
-                li.className = `p-2 rounded-md shadow bg-yellow-400 flex flex-col`;
+                li.className = `p-3 rounded-lg shadow-sm bg-yellow-50 border border-yellow-200 flex flex-col gap-2`;
                 li.innerHTML = `
-                    <div class="flex-1">
-                        <span class="font-bold">${request.username}</span>
-                        <p class="text-sm mt-1">${request.achievementName}</p>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="font-bold text-gray-800">${request.username}</span>
+                            <p class="text-xs text-gray-600 mt-0.5">${request.achievementName}</p>
+                        </div>
                     </div>
-                    <div class="mt-2">
-                        <button class="w-full py-1 px-3 rounded-md bg-green-500 text-white font-bold text-xs" onclick="markAsCompleted('${request.username}', '${request.achievementName}')">Mark as Completed</button>
-                        <button class="w-full mt-1 py-1 px-3 rounded-md bg-gray-500 text-white font-bold text-xs" onclick="dismissReview('${request.username}', '${request.achievementName}')">Dismiss</button>
+                    <div class="flex gap-2">
+                        <button class="flex-1 py-1.5 rounded-md bg-green-600 text-white font-bold text-xs" onclick="markAsCompleted('${request.username}', '${request.achievementName}')">Approve</button>
+                        <button class="flex-1 py-1.5 rounded-md bg-gray-400 text-white font-bold text-xs" onclick="dismissReview('${request.username}', '${request.achievementName}')">Deny</button>
                     </div>
                 `;
                 reviewRequestsList.appendChild(li);
@@ -684,7 +631,6 @@
         
         function updateBoardState(boardContainer, board, pendingAchievements = [], reviewUsername = null) {
             const cells = boardContainer.children;
-            // Use Object.values to get an array of achievements from the board object
             const achievementsArray = Object.values(board);
 
             achievementsArray.forEach((achievement, index) => {
@@ -692,7 +638,6 @@
                 if (!cell) return;
                 
                 const isPending = pendingAchievements.includes(achievement.name);
-                
                 const completeBtn = cell.querySelector('.complete-btn');
                 
                 cell.classList.remove('bg-yellow-400', 'cell-pending', 'bg-red-500', 'cell-red', 'bg-blue-500', 'cell-blue');
@@ -704,20 +649,17 @@
                     cell.classList.add('bg-yellow-400', 'cell-pending');
                 }
                 
-                if (reviewUsername) {
-                    if (isPending && !completeBtn) {
-                        const newBtn = document.createElement('button');
-                        newBtn.textContent = 'Mark Complete';
-                        newBtn.className = 'complete-btn mt-auto bg-green-500 text-white font-bold rounded-md';
-                        newBtn.onclick = () => markAsCompleted(reviewUsername, achievement.name, achievement.team);
-                        cell.appendChild(newBtn);
-                    } else if (!isPending && completeBtn) {
-                        cell.removeChild(completeBtn);
-                    }
-                } else if (!isParticipant) {
-                    if(completeBtn) {
-                       cell.removeChild(completeBtn);
-                    }
+                if (reviewUsername && isPending && !completeBtn) {
+                    const newBtn = document.createElement('button');
+                    newBtn.textContent = 'Approve';
+                    newBtn.className = 'complete-btn mt-auto bg-green-500 text-white font-bold rounded-md px-2 py-1 text-xs shadow-sm';
+                    newBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        markAsCompleted(reviewUsername, achievement.name);
+                    };
+                    cell.appendChild(newBtn);
+                } else if ((!reviewUsername || !isPending) && completeBtn) {
+                    cell.removeChild(completeBtn);
                 }
             });
         }
@@ -725,46 +667,35 @@
         function renderInitialBoard(boardContainer, board, boardSize) {
             boardContainer.innerHTML = '';
             boardContainer.style.gridTemplateColumns = `repeat(${boardSize}, minmax(0, 1fr))`;
-            
-            // Use Object.values to iterate over the achievements
             Object.values(board).forEach(achievement => {
                 const cell = createBingoCell(achievement);
                 boardContainer.appendChild(cell);
             });
             
+            // Adjust font size based on dynamic layout
             setTimeout(() => {
                 const firstCell = boardContainer.querySelector('.bingo-cell');
                 if (!firstCell) return;
                 const cellWidth = firstCell.offsetWidth;
-                const baseFontSize = cellWidth * 0.12;
-                const completeButtonFontSize = cellWidth * 0.09;
-                
+                const baseFontSize = Math.max(8, cellWidth * 0.12);
                 Array.from(boardContainer.children).forEach(cell => {
                     cell.style.fontSize = `${baseFontSize}px`;
-                    const completeBtn = cell.querySelector('.complete-btn');
-                    if (completeBtn) {
-                        completeBtn.style.fontSize = `${completeButtonFontSize}px`;
-                        const paddingY = cellWidth * 0.02;
-                        const paddingX = cellWidth * 0.04;
-                        completeBtn.style.padding = `${paddingY}px ${paddingX}px`;
-                    }
                 });
             }, 0);
         }
         
         function createBingoCell(achievement) {
             const cell = document.createElement('div');
-            cell.className = `bingo-cell rounded-lg shadow relative`;
+            cell.className = `bingo-cell rounded-lg shadow-sm border border-gray-200 relative p-1`;
             cell.setAttribute('data-name', achievement.name);
 
             const achievementText = document.createElement('div');
-            achievementText.className = 'cell-text';
+            achievementText.className = 'cell-text leading-tight';
             achievementText.textContent = achievement.name;
             
             const infoBtn = document.createElement('div');
             infoBtn.className = 'info-btn';
             infoBtn.innerHTML = `<span class="info-btn-text">i</span>`;
-            
             infoBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 document.getElementById('modal-achievement-name').textContent = achievement.name;
@@ -778,39 +709,19 @@
             if (isParticipant) {
                 cell.addEventListener('click', () => {
                      const index = localSelectedAchievements.indexOf(achievement.name);
-                     if (index > -1) {
-                         localSelectedAchievements.splice(index, 1);
-                     } else {
-                         localSelectedAchievements.push(achievement.name);
-                     }
+                     if (index > -1) localSelectedAchievements.splice(index, 1);
+                     else localSelectedAchievements.push(achievement.name);
+                     
                      const participant = globalLobbyState.participants.find(p => p.username === currentUsername);
                      if (participant) {
                          const allPending = [...new Set([...participant.pendingReview, ...localSelectedAchievements])];
-                         const boardContainer = document.getElementById('participant-bingo-board');
-                         updateBoardState(
-                            boardContainer,
-                            globalLobbyState.bingoBoard,
-                            allPending
-                        );
+                         updateBoardState(document.getElementById('participant-bingo-board'), globalLobbyState.bingoBoard, allPending);
                      }
                 });
             } else {
                  cell.addEventListener('click', () => showAdminManualModal(achievement.name));
             }
-
             return cell;
-        }
-
-        window.copyCode = function(elementId) {
-            const textToCopy = document.getElementById(elementId).textContent.split(': ')[1];
-            navigator.clipboard.writeText(textToCopy)
-                .then(() => {
-                    showModal('custom-modal', 'Success', 'Code copied to clipboard!');
-                })
-                .catch(err => {
-                    showModal('custom-modal', 'Error', 'Failed to copy code.');
-                    console.error('Failed to copy:', err);
-                });
         }
     </script>
 </body>
