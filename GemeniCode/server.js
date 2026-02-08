@@ -239,24 +239,31 @@ io.on('connection', (socket) => {
     });
 });
 
-const os = require('os');
-const listener = server.listen(0, () => {
-    const port = listener.address().port;
-    const networkInterfaces = os.networkInterfaces();
-    let ipAddress = '127.0.0.1';
-    for (const interfaceName in networkInterfaces) {
-        for (const iface of networkInterfaces[interfaceName]) {
-            if (name.toLowerCase().includes('vbox') || 
-                name.toLowerCase().includes('virtual') || 
-                name.toLowerCase().includes('vethernet') || 
-                name.toLowerCase().includes('wsl')) {
-                continue;
-            }
-            if (iface.family === 'IPv4' && !iface.internal) {
-                ipAddress = iface.address;
-                break;
-            }
-        }
+
+function getNonVethernetIPv4() {
+  const interfaces = os.networkInterfaces();
+
+  for (const [name, ifaces] of Object.entries(interfaces)) {
+    // Skip Hyper-V / WSL virtual adapters
+    if (/vethernet/i.test(name)) continue;
+
+    for (const iface of ifaces) {
+      if (
+        iface.family === 'IPv4' &&
+        !iface.internal
+      ) {
+        return iface.address;
+      }
     }
-    console.log(`Server is running on http://${ipAddress}:${port}`);
+  }
+
+  // Fallback
+  return '127.0.0.1';
+}
+
+const ipAddress = getNonVethernetIPv4();
+
+const listener = server.listen(0, ipAddress, () => {
+  const { port } = listener.address();
+  console.log(`Server is running on http://${ipAddress}:${port}`);
 });
